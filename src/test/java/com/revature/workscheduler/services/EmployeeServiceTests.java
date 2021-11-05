@@ -54,6 +54,38 @@ public class EmployeeServiceTests
 	}
 
 	@Test
+	void getMissingEmployee()
+	{
+		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
+		int id = employee.getEmployeeID();
+		Mockito.when(repo.findById(id)).thenReturn(Optional.empty());
+		Assertions.assertNull(this.service.get(id));
+	}
+
+	@Test
+	void updateEmployee()
+	{
+		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
+		int id = employee.getEmployeeID();
+		employee.setName("Updated Name");
+		Mockito.when(repo.save(employee)).thenReturn(employee);
+		Mockito.when(repo.findById(id)).thenReturn(Optional.of(employee));
+		Employee updatedEmployee = this.service.update(employee);
+		Assertions.assertEquals(employee.getName(), updatedEmployee.getName());
+	}
+
+	@Test
+	void updateMissingEmployee()
+	{
+		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
+		int id = employee.getEmployeeID();
+		employee.setName("Updated Name");
+		Mockito.when(repo.findById(id)).thenReturn(Optional.empty());
+		Mockito.when(repo.save(employee)).thenReturn(employee);
+		Assertions.assertNull(this.service.update(employee));
+	}
+
+	@Test
 	void deleteEmployee()
 	{
 		int id = 1;

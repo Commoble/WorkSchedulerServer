@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,10 +21,36 @@ public class EmployeeController
 	@Autowired
 	private EmployeeService service;
 
+	/**
+	 *
+	 * @param shiftTypeParam Nullable query parameter, parsed as an int. If present, only employees
+	 *                       assignable to that shift type are returned.
+	 * @param startTimeParam Nullable query parameter, parsed as a long. If both start time and end
+	 *                       time are present, only returns employees able to work between the two times.
+	 *                       Time format is unix epoch milliseconds.
+	 * @param endTimeParam Nullable query parameter, parsed as a long. If both start time and end
+	 *                       time are present, only returns employees able to work between the two times.
+	 *                       Time format is unix epoch milliseconds.
+	 * @return List of employees
+	 */
 	@GetMapping("/employees")
-	public List<Employee> getEmployees()
+	public List<Employee> getEmployees(
+		@RequestParam(name="shiftType") String shiftTypeParam,
+		@RequestParam(name="startTime") String startTimeParam,
+		@RequestParam(name="endTime") String endTimeParam)
 	{
-		return this.service.getAll();
+		if (shiftTypeParam == null)
+		{
+			return this.service.getAll();
+		}
+		int shiftTypeID = ParseUtils.safeParseInt(shiftTypeParam, 0);
+		if (startTimeParam == null || endTimeParam == null)
+		{
+			return this.service.getAssignableEmployees(shiftTypeID);
+		}
+		long startTime = ParseUtils.safeParseLong(startTimeParam, Long.MIN_VALUE);
+		long endTime = ParseUtils.safeParseLong(startTimeParam, Long.MAX_VALUE);
+		return this.service.getAssignableEmployees(shiftTypeID, startTime, endTime);
 	}
 
 	@GetMapping("/employees/{id}")
