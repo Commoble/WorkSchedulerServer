@@ -54,21 +54,25 @@ public class EmployeeServiceTests
 	}
 
 	@Test
-	void deleteActor()
+	void deleteEmployee()
 	{
-		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
-		int oldID = employee.getEmployeeID();
-		Mockito.doNothing().when(repo).deleteById(oldID);
+		int id = 1;
+		Employee employee = new Employee("Steve Testingperson", "stevet", "parseword", 0);
+		Employee mockEmployee = new Employee(id, employee.getName(), employee.getUsername(), employee.getPassword(), employee.getStartDate());
+		Optional<Employee> optionalEmployee = Optional.of(employee);
+		Mockito.when(repo.findById(id)).thenReturn(optionalEmployee);
+		Mockito.doNothing().when(repo).deleteById(id);
 
-		boolean deleted = this.service.delete(oldID);
+		boolean deleted = this.service.delete(id);
 		Assertions.assertTrue(deleted);
 	}
 
 	@Test
-	void deleteMissingActor()
+	void deleteMissingEmployee()
 	{
 		Employee employee = new Employee("Steve Testingperson", "stevet", "parseword", 0);
 		int oldID = employee.getEmployeeID();
+		Mockito.when(repo.findById(oldID)).thenReturn(Optional.empty());
 		Mockito.doThrow(IllegalArgumentException.class).when(repo).deleteById(oldID);
 		boolean deleted = service.delete(oldID);
 		Assertions.assertFalse(deleted);

@@ -1,5 +1,6 @@
 package com.revature.workscheduler.services;
 
+import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,5 +15,11 @@ public class EmployeeServiceImpl implements EmployeeService
 	public EmployeeRepo getRepo()
 	{
 		return this.repo;
+	}
+
+	@Override
+	public Integer getIDFor(Employee e)
+	{
+		return e.getEmployeeID();
 	}
 }
