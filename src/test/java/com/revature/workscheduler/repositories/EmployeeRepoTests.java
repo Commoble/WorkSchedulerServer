@@ -119,6 +119,20 @@ public class EmployeeRepoTests
 		Assertions.assertFalse(this.repo.findById(id).isPresent());
 	}
 
+	@Test
+	@Rollback
+	void findByUsernameFindsEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	@Rollback
+	void findByUsernameDoesntFindMissingEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
 	private static Employee makeRandomEmployee()
 	{
 		long time = System.currentTimeMillis();
