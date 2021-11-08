@@ -63,6 +63,12 @@ public class EmployeeServiceTests
 	}
 
 	@Test
+	void getEmployeesGetsEmployees()
+	{
+		Assertions.assertNotNull(this.service.getAll());
+	}
+
+	@Test
 	void updateEmployee()
 	{
 		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
@@ -108,5 +114,78 @@ public class EmployeeServiceTests
 		Mockito.doThrow(IllegalArgumentException.class).when(repo).deleteById(oldID);
 		boolean deleted = service.delete(oldID);
 		Assertions.assertFalse(deleted);
+	}
+
+	@Test
+	void getEmployeeByUsernameGetsEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void getEmployeeByUsernameDoesntGetMissingEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void getEmployeeByUsernameDoesntGetEmployeeForNullUsername()
+	{
+		Employee employee = this.service.getEmployeeByUsername(null);
+		Assertions.assertNull(employee);
+	}
+
+	@Test
+	void employeeThatCanCreateShiftsCanCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotCreateShiftsCannotCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCanAssignShiftsCanAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotAssignShiftsCannotAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCanApproveTimeOffCanApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotApproveTimeOffCannotApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
 	}
 }

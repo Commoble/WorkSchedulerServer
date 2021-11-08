@@ -33,9 +33,8 @@ create table if not exists employee_shift_type_junctions(
 -- defines user permissions in the api, web app, etc
 create table if not exists roles(
 	role_id serial primary key,
-	can_create_shifts boolean not null,
-	can_assign_shifts boolean not null,
-	can_approve_time_off boolean not null
+	role_name varchar(50),
+	is_manager boolean not null
 );
 
 -- defines which employees have which roles
@@ -67,3 +66,13 @@ create table if not exists recurring_unavailabilities(
 	start_time bigint not null, -- stored as millis relative to start of day
 	end_time bigint not null
 );
+
+insert into roles values
+	(default, 'Manager', true);
+
+insert into employees values
+	(default, 'Larry Manager', 'larrymanager', 'larrypassword', 0),
+	(default, 'Steve Clerk', 'steveclerk', 'stevepassword', 0);
+
+insert into employee_role_junctions values
+	(default, 1, 1) -- assign manager role to Larry Manager;
