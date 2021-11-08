@@ -35,9 +35,9 @@ public class EmployeeController
 	 */
 	@GetMapping("/employees")
 	public List<Employee> getEmployees(
-		@RequestParam(name="shiftType") String shiftTypeParam,
-		@RequestParam(name="startTime") String startTimeParam,
-		@RequestParam(name="endTime") String endTimeParam)
+		@RequestParam(name="shiftType", required=false) String shiftTypeParam,
+		@RequestParam(name="startTime", required=false) String startTimeParam,
+		@RequestParam(name="endTime", required=false) String endTimeParam)
 	{
 		if (shiftTypeParam == null)
 		{
