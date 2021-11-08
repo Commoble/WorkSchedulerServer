@@ -34,9 +34,7 @@ create table if not exists employee_shift_type_junctions(
 create table if not exists roles(
 	role_id serial primary key,
 	role_name varchar(50),
-	can_create_shifts boolean not null,
-	can_assign_shifts boolean not null,
-	can_approve_time_off boolean not null
+	is_manager boolean not null
 );
 
 -- defines which employees have which roles
@@ -70,7 +68,7 @@ create table if not exists recurring_unavailabilities(
 );
 
 insert into roles values
-	(default, 'Manager', true, true, true);
+	(default, 'Manager', true);
 
 insert into employees values
 	(default, 'Larry Manager', 'larrymanager', 'larrypassword', 0),
