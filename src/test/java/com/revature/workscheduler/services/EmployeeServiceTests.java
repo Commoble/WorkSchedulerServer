@@ -109,4 +109,58 @@ public class EmployeeServiceTests
 		boolean deleted = service.delete(oldID);
 		Assertions.assertFalse(deleted);
 	}
+
+	@Test
+	void employeeThatCanCreateShiftsCanCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotCreateShiftsCannotCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotCreateShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCanAssignShiftsCanAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotAssignShiftsCannotAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotAssignShifts()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCanApproveTimeOffCanApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void employeeThatCannotApproveTimeOffCannotApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void missingEmployeeCannotApproveTimeOff()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
 }
