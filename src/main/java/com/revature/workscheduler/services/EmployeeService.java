@@ -2,10 +2,11 @@ package com.revature.workscheduler.services;
 
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.repositories.EmployeeRepo;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface EmployeeService extends CrudService<Employee, Integer, EmployeeRepo>
+public interface EmployeeService extends CrudService<Employee, Integer, EmployeeRepo>, UserDetailsService
 {
 	/**
 	 * Gets all employees that can be assigned to the given shift type
@@ -25,26 +26,25 @@ public interface EmployeeService extends CrudService<Employee, Integer, Employee
 	public List<Employee> getAssignableEmployees(int shiftTypeID, long startTime, long endTime);
 
 	/**
-	 * Returns whether the given employee can create new shift types
-	 * @param employeeID ID of an employee
-	 * @return True if the employee can create new shift types,
-	 * false if they cannot or do not exist
+	 * Returns the employee with the given username. Each employee has a unique username.
+	 * @param username Employee's username.
+	 * @return The employee with the given username. Returns null if no matching employee is found.
 	 */
-	public boolean canEmployeeCreateShifts(int employeeID);
+	public Employee getEmployeeByUsername(String username);
 
 	/**
-	 * Returns whether the given employee can assign employees to shifts
+	 * Returns whether the given employee is a manager
 	 * @param employeeID ID of an employee
-	 * @return True if the employee can assign employees to shifts,
+	 * @return True if the employee is a manager
 	 * false if they cannot or do not exist
 	 */
-	public boolean canEmployeeAssignShifts(int employeeID);
+	public boolean isEmployeeManager(int employeeID);
 
 	/**
-	 * Returns whether the given employee can approve time off
-	 * @param employeeID ID of an employee
-	 * @return True of the employee can approve time off,
-	 * false if they cannot or do not exist
+	 * Returns the employee logged into the current session.
+	 * Only usable during an HTTP request.
+	 * @return Logged-in employee.
+	 * May not return a meaningful value outside of an HTTP request.
 	 */
-	public boolean canEmployeeApproveTimeOff(int employeeID);
+	public Employee getLoggedInEmployee();
 }

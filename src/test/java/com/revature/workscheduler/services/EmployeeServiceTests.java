@@ -63,6 +63,12 @@ public class EmployeeServiceTests
 	}
 
 	@Test
+	void getEmployeesGetsEmployees()
+	{
+		Assertions.assertNotNull(this.service.getAll());
+	}
+
+	@Test
 	void updateEmployee()
 	{
 		Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
@@ -108,6 +114,25 @@ public class EmployeeServiceTests
 		Mockito.doThrow(IllegalArgumentException.class).when(repo).deleteById(oldID);
 		boolean deleted = service.delete(oldID);
 		Assertions.assertFalse(deleted);
+	}
+
+	@Test
+	void getEmployeeByUsernameGetsEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void getEmployeeByUsernameDoesntGetMissingEmployee()
+	{
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void getEmployeeByUsernameDoesntGetEmployeeForNullUsername()
+	{
+		Employee employee = this.service.getEmployeeByUsername(null);
+		Assertions.assertNull(employee);
 	}
 
 	@Test

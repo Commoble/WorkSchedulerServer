@@ -4,6 +4,10 @@ import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.utils.ParseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController // works better than @Controller
@@ -33,6 +38,7 @@ public class EmployeeController
 	 *                       Time format is unix epoch milliseconds.
 	 * @return List of employees
 	 */
+	@Secured("ROLE_MANAGER")
 	@GetMapping("/employees")
 	public List<Employee> getEmployees(
 		@RequestParam(name="shiftType", required=false) String shiftTypeParam,
@@ -53,6 +59,7 @@ public class EmployeeController
 		return this.service.getAssignableEmployees(shiftTypeID, startTime, endTime);
 	}
 
+	@Secured("ROLE_MANAGER")
 	@GetMapping("/employees/{id}")
 	public Employee getEmployee(@PathVariable("id") String idParam)
 	{
