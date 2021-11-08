@@ -10,6 +10,6 @@ public class RecurringUnavailabilityController {
     @Autowired
     private RecurringUnavailabilityService service;
 
-    @GetMapping("/setRecurringUnavailability")
+//    @GetMapping("/setRecurringUnavailability")
 
 }

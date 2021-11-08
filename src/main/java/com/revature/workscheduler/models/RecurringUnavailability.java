@@ -31,6 +31,11 @@ public class RecurringUnavailability
 	@Column(name="end_time", nullable = false)
 	private long endTime;
 
+	public RecurringUnavailability()
+	{
+		this(null, 0, 0, 0);
+	}
+
 	public RecurringUnavailability(Employee employee, int weekday, long startTime, long endTime)
 	{
 		this(0, employee, weekday, startTime, endTime);
@@ -42,6 +47,56 @@ public class RecurringUnavailability
 		this.employee = employee;
 		this.weekday = weekday;
 		this.startTime = startTime;
+		this.endTime = endTime;
+	}
+
+	public int getRecurringUnavailabilityID()
+	{
+		return recurringUnavailabilityID;
+	}
+
+	public void setRecurringUnavailabilityID(int recurringUnavailabilityID)
+	{
+		this.recurringUnavailabilityID = recurringUnavailabilityID;
+	}
+
+	public Employee getEmployee()
+	{
+		return employee;
+	}
+
+	public void setEmployee(Employee employee)
+	{
+		this.employee = employee;
+	}
+
+	public int getWeekday()
+	{
+		return weekday;
+	}
+
+	public void setWeekday(int weekday)
+	{
+		this.weekday = weekday;
+	}
+
+	public long getStartTime()
+	{
+		return startTime;
+	}
+
+	public void setStartTime(long startTime)
+	{
+		this.startTime = startTime;
+	}
+
+	public long getEndTime()
+	{
+		return endTime;
+	}
+
+	public void setEndTime(long endTime)
+	{
 		this.endTime = endTime;
 	}
 }

@@ -31,15 +31,14 @@ public class RoleServiceTest {
     @Test
     void addRole()
     {
-        Role role = new Role(false, false, false);
+        Role role = new Role("Test Role", false);
         int oldId = role.getRoleID();
-        Mockito.when(repo.save(role)).thenReturn(new Role(1,role.isCanCreateShifts(), role.isCanAssignShifts(), role.isCanApproveTimeOff()));
+        Mockito.when(repo.save(role)).thenReturn(new Role(1,role.getName(), role.isManager()));
         Role addedRole = service.add(role);
         int newId= addedRole.getRoleID();
         Assertions.assertNotEquals(oldId, newId);
-        Assertions.assertNotEquals(role.isCanCreateShifts(), addedRole.isCanCreateShifts());
-        Assertions.assertNotEquals(role.isCanAssignShifts(), addedRole.isCanAssignShifts());
-        Assertions.assertNotEquals(role.isCanApproveTimeOff(), addedRole.isCanApproveTimeOff());
+        Assertions.assertEquals(role.getName(), addedRole.getName());
+        Assertions.assertEquals(role.isManager(), addedRole.isManager());
     }
 
 
@@ -56,35 +55,33 @@ public class RoleServiceTest {
     @Test
     void getRole()
     {
-        Role role = new Role(1,false, false, false);
+        Role role = new Role(1,"Test Role", false);
         int oldId = role.getRoleID();
         Optional<Role> optionalRole = Optional.of(role);
         Mockito.when(repo.findById(oldId)).thenReturn(optionalRole);
         Role actRole = this.service.get(oldId);
         int actId= actRole.getRoleID();
-        Assertions.assertNotEquals(oldId, actId);
-        Assertions.assertNotEquals(role.isCanCreateShifts(), actRole.isCanCreateShifts());
-        Assertions.assertNotEquals(role.isCanAssignShifts(), actRole.isCanAssignShifts());
-        Assertions.assertNotEquals(role.isCanApproveTimeOff(), actRole.isCanApproveTimeOff());
+        Assertions.assertEquals(oldId, actId);
+        Assertions.assertEquals(role.getName(), actRole.getName());
+        Assertions.assertEquals(role.isManager(), actRole.isManager());
     }
     @Test
     void updateRole()
     {
-        Role role = new Role(1,false, false, false);
+        Role role = new Role(1,"Test Role", false);
         int id = role.getRoleID();
-        role.setCanApproveTimeOff(true);
+        role.setIsManager(true);
         Mockito.when(repo.save(role)).thenReturn(role);
         Mockito.when(repo.findById(id)).thenReturn(Optional.of(role));
         Role updatedRole = this.service.update(role);
-        Assertions.assertEquals(role.isCanApproveTimeOff(), updatedRole.isCanApproveTimeOff());
+        Assertions.assertEquals(role.isManager(), updatedRole.isManager());
     }
 
     @Test
-    void deleteEmployee()
+    void deleteRole()
     {
         int id = 1;
-        Role role = new Role(false, false, false);
-        Role mockEmployee = new Role(id, role.isCanCreateShifts(), role.isCanAssignShifts(), role.isCanApproveTimeOff());
+        Role role = new Role(id, "Test Role", false);
         Optional<Role> optionalRole = Optional.of(role);
         Mockito.when(repo.findById(id)).thenReturn(optionalRole);
         Mockito.doNothing().when(repo).deleteById(id);
