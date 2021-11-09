@@ -27,6 +27,19 @@ public class EmployeeController
 	private EmployeeService service;
 
 	/**
+	 * Returns information for the employee whose auth credentials are being used.
+	 * Can be used to validate that login credentials are correct,
+	 * or to get employee's own display name or ID
+	 * @return Logged in employee info
+	 */
+	@Secured("ROLE_USER")
+	@GetMapping("/login")
+	public Employee getLoggedInEmployee()
+	{
+		return this.service.getLoggedInEmployee();
+	}
+
+	/**
 	 *
 	 * @param shiftTypeParam Nullable query parameter, parsed as an int. If present, only employees
 	 *                       assignable to that shift type are returned.
@@ -65,10 +78,4 @@ public class EmployeeController
 	{
 		return this.service.get(ParseUtils.safeParseInt(idParam,10));
 	}
-
-//	@PostMapping(value="/employees", consumes="application/json")
-//	public Employee postEmployee(@RequestBody Employee employee)
-//	{
-//		return null;
-//	}
 }
