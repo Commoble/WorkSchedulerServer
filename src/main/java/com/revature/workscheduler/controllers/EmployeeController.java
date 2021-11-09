@@ -1,9 +1,11 @@
 package com.revature.workscheduler.controllers;
 
+import com.google.gson.Gson;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.utils.ParseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.util.List;
 
 @RestController // works better than @Controller
 public class EmployeeController
 {
+	private static final Gson GSON = new Gson();
+
 	@Autowired
 	private EmployeeService service;
 
@@ -36,7 +42,17 @@ public class EmployeeController
 	@GetMapping("/login")
 	public Employee getLoggedInEmployee()
 	{
-		return this.service.getLoggedInEmployee();
+		// if we just return getLoggedInEmployee() from here
+		// then we get a parsing error
+		// (probably because it's a bean disguised as an employee, not an actual employee)
+		// we can copy it to a new Employee though
+		Employee loggedInEmployee = this.service.getLoggedInEmployee();
+		return new Employee(
+			loggedInEmployee.getEmployeeID(),
+			loggedInEmployee.getName(),
+			loggedInEmployee.getUsername(),
+			loggedInEmployee.getPassword(),
+			loggedInEmployee.getStartDate());
 	}
 
 	/**
@@ -76,6 +92,6 @@ public class EmployeeController
 	@GetMapping("/employees/{id}")
 	public Employee getEmployee(@PathVariable("id") String idParam)
 	{
-		return this.service.get(ParseUtils.safeParseInt(idParam,10));
+		return this.service.get(ParseUtils.safeParseInt(idParam,0));
 	}
 }
