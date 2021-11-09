@@ -76,6 +76,6 @@ public class EmployeeController
 	@GetMapping("/employees/{id}")
 	public Employee getEmployee(@PathVariable("id") String idParam)
 	{
-		return this.service.get(ParseUtils.safeParseInt(idParam,10));
+		return this.service.get(ParseUtils.safeParseInt(idParam,0));
 	}
 }
