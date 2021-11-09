@@ -11,5 +11,5 @@ public interface ScheduledShiftRepo extends CrudRepository<ScheduledShift, Integ
 {
 
     List<ScheduledShift> findByDate(long date);
-    List<ScheduledShift> findByShiftId(int id);
+    List<ScheduledShift> findByScheduledShiftID(int id);
 }

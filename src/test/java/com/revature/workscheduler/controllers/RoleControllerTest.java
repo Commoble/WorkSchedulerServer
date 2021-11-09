@@ -27,7 +27,7 @@ public class RoleControllerTest
     @Test
     void getEmployeeByID() throws Exception
     {
-        Role expectedRole = new Role(1, true, true, true);
+        Role expectedRole = new Role(1, "Test Role", true);
         Mockito.when(service.get(1))
                 .thenReturn(expectedRole);
         ResultActions actions = mvc.perform(MockMvcRequestBuilders.get("/roles/1"));

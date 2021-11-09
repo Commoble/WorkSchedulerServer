@@ -16,22 +16,26 @@ public class Role
 	@Column(name="role_id", updatable = false, nullable = false, unique=true)
 	private int roleID;
 
+	@Column(name="role_name", nullable = false)
+	private String name;
+
 	@Column(name="is_manager", nullable = false)
 	private boolean isManager;
 
 	public Role()
 	{
-		this(false);
+		this("", false);
 	}
 
-	public Role(boolean isManager)
+	public Role(String name, boolean isManager)
 	{
-		this(0, isManager);
+		this(0, name, isManager);
 	}
 
-	public Role(int roleID, boolean isManager)
+	public Role(int roleID, String name, boolean isManager)
 	{
 		this.roleID = roleID;
+		this.name = name;
 		this.isManager = isManager;
 	}
 
@@ -43,6 +47,16 @@ public class Role
 	public void setRoleID(int roleID)
 	{
 		this.roleID = roleID;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	public boolean isManager()
