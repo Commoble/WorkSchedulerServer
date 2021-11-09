@@ -16,31 +16,27 @@ public class Role
 	@Column(name="role_id", updatable = false, nullable = false, unique=true)
 	private int roleID;
 
-	@Column(name="can_create_shifts", nullable = false)
-	private boolean canCreateShifts;
+	@Column(name="role_name", nullable = false)
+	private String name;
 
-	@Column(name="can_assign_shifts", nullable = false)
-	private boolean canAssignShifts;
-
-	@Column(name="can_approve_time_off", nullable = false)
-	private boolean canApproveTimeOff;
+	@Column(name="is_manager", nullable = false)
+	private boolean isManager;
 
 	public Role()
 	{
-		this(false, false, false);
+		this("", false);
 	}
 
-	public Role(boolean canCreateShifts, boolean canAssignShifts, boolean canApproveTimeOff)
+	public Role(String name, boolean isManager)
 	{
-		this(0, canCreateShifts, canAssignShifts, canApproveTimeOff);
+		this(0, name, isManager);
 	}
 
-	public Role(int roleID, boolean canCreateShifts, boolean canAssignShifts, boolean canApproveTimeOff)
+	public Role(int roleID, String name, boolean isManager)
 	{
 		this.roleID = roleID;
-		this.canCreateShifts = canCreateShifts;
-		this.canAssignShifts = canAssignShifts;
-		this.canApproveTimeOff = canApproveTimeOff;
+		this.name = name;
+		this.isManager = isManager;
 	}
 
 	public int getRoleID()
@@ -53,33 +49,23 @@ public class Role
 		this.roleID = roleID;
 	}
 
-	public boolean isCanCreateShifts()
+	public String getName()
 	{
-		return this.canCreateShifts;
+		return name;
 	}
 
-	public void setCanCreateShifts(boolean canCreateShifts)
+	public void setName(String name)
 	{
-		this.canCreateShifts = canCreateShifts;
+		this.name = name;
 	}
 
-	public boolean isCanAssignShifts()
+	public boolean isManager()
 	{
-		return this.canAssignShifts;
+		return this.isManager;
 	}
 
-	public void setCanAssignShifts(boolean canAssignShifts)
+	public void setIsManager(boolean isManager)
 	{
-		this.canAssignShifts = canAssignShifts;
-	}
-
-	public boolean isCanApproveTimeOff()
-	{
-		return this.canApproveTimeOff;
-	}
-
-	public void setCanApproveTimeOff(boolean canApproveTimeOff)
-	{
-		this.canApproveTimeOff = canApproveTimeOff;
+		this.isManager = isManager;
 	}
 }

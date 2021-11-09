@@ -26,6 +26,11 @@ public class EmployeeRoleJunction
 	@JoinColumn(name="role_id", nullable=false)
 	private Role roleID;
 
+	public EmployeeRoleJunction()
+	{
+		this(0, null, null);
+	}
+
 	public EmployeeRoleJunction(Employee employee, Role roleID)
 	{
 		this(0, employee, roleID);
