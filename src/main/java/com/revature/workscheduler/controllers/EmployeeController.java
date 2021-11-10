@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.utils.ParseUtils;
+import com.revature.workscheduler.webmodels.EmployeeResponse;
+import com.revature.workscheduler.webmodels.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController // works better than @Controller
 public class EmployeeController
@@ -40,19 +46,16 @@ public class EmployeeController
 	 */
 	@Secured("ROLE_USER")
 	@GetMapping("/login")
-	public Employee getLoggedInEmployee()
+	public String getLoggedInEmployee()
 	{
 		// if we just return getLoggedInEmployee() from here
 		// then we get a parsing error
 		// (probably because it's a bean disguised as an employee, not an actual employee)
 		// we can copy it to a new Employee though
 		Employee loggedInEmployee = this.service.getLoggedInEmployee();
-		return new Employee(
-			loggedInEmployee.getEmployeeID(),
-			loggedInEmployee.getName(),
-			loggedInEmployee.getUsername(),
-			loggedInEmployee.getPassword(),
-			loggedInEmployee.getStartDate());
+		EmployeeResponse employeeResponse = new EmployeeResponse(loggedInEmployee);
+		boolean isManager = this.service.isEmployeeManager(loggedInEmployee.getEmployeeID());
+		return GSON.toJson(new LoginResponse(employeeResponse, isManager));
 	}
 
 	/**
@@ -69,29 +72,44 @@ public class EmployeeController
 	 */
 	@Secured("ROLE_MANAGER")
 	@GetMapping("/employees")
-	public List<Employee> getEmployees(
+	public String getEmployees(
 		@RequestParam(name="shiftType", required=false) String shiftTypeParam,
 		@RequestParam(name="startTime", required=false) String startTimeParam,
 		@RequestParam(name="endTime", required=false) String endTimeParam)
 	{
 		if (shiftTypeParam == null)
 		{
-			return this.service.getAll();
+			return GSON.toJson(this.service.getAll()
+				.stream()
+				.map(EmployeeResponse::new)
+				.collect(Collectors.toList())
+			);
 		}
 		int shiftTypeID = ParseUtils.safeParseInt(shiftTypeParam, 0);
 		if (startTimeParam == null || endTimeParam == null)
 		{
-			return this.service.getAssignableEmployees(shiftTypeID);
+			return GSON.toJson(this.service.getAssignableEmployees(shiftTypeID)
+				.stream()
+				.map(EmployeeResponse::new)
+				.collect(Collectors.toList())
+			);
 		}
 		long startTime = ParseUtils.safeParseLong(startTimeParam, Long.MIN_VALUE);
 		long endTime = ParseUtils.safeParseLong(startTimeParam, Long.MAX_VALUE);
-		return this.service.getAssignableEmployees(shiftTypeID, startTime, endTime);
+		return GSON.toJson(this.service.getAssignableEmployees(shiftTypeID, startTime, endTime)
+			.stream()
+			.map(EmployeeResponse::new)
+			.collect(Collectors.toList())
+		);
 	}
 
 	@Secured("ROLE_MANAGER")
 	@GetMapping("/employees/{id}")
-	public Employee getEmployee(@PathVariable("id") String idParam)
+	public String getEmployee(@PathVariable("id") String idParam)
 	{
-		return this.service.get(ParseUtils.safeParseInt(idParam,0));
+		Employee employee = this.service.get(ParseUtils.safeParseInt(idParam,0));
+		if (employee == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		return GSON.toJson(new EmployeeResponse(employee));
 	}
 }
