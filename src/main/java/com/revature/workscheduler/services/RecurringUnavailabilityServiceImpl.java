@@ -50,11 +50,11 @@ public class RecurringUnavailabilityServiceImpl implements RecurringUnavailabili
         return rur.getRecurringUnavailabilityByWeekday(weekday);
     }
 
-    @Override
-    public List<RecurringUnavailability> getRecurringUnavailabilityByTime(long startTime, long endTime) {
-
-        return rur.getRecurringUnavailabilityByTime(startTime, endTime);
-    }
+//    @Override
+//    public List<RecurringUnavailability> getRecurringUnavailabilityByTime(long startTime, long endTime) {
+//
+//        return rur.getRecurringUnavailabilityByTime(startTime, endTime);
+//    }
 
     @Override
     public RecurringUnavailability getRecurringUnavailabilityById(int recurringUnavailabilityID){
