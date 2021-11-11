@@ -68,11 +68,19 @@ create table if not exists recurring_unavailabilities(
 );
 
 insert into roles values
-	(default, 'Manager', true);
+	(default, 'Manager', true),
+	(default, 'clerk', false);
 
 insert into employees values
 	(default, 'Larry Manager', 'larrymanager', 'larrypassword', 0),
 	(default, 'Steve Clerk', 'steveclerk', 'stevepassword', 0);
 
 insert into employee_role_junctions values
-	(default, 1, 1) -- assign manager role to Larry Manager;
+	(default, 1, 1), -- assign manager role to Larry Manager;
+	(default, 2,2);
+	
+insert into shift_types values
+	(default, 'Morning Kitchen', 18000000, 43200000),	-- 5am to Noon
+	(default, 'Morning Register', 18000000, 43200000), -- 5am to Noon
+	(default, 'Night Kitchen', 43200000, 68400000), -- Noon to 7pm
+	(default, 'Night Register', 43200000, 68400000); -- Noon to 7pm

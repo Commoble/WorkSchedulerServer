@@ -30,6 +30,11 @@ public class TimeOffRequest
 
 	@Column(name="approved", nullable=true)
 	private Boolean approved;
+	
+	public TimeOffRequest()
+	{
+		this(new Employee(), 0,0,null);
+	}
 
 	public TimeOffRequest(Employee employee, long startTime, long endTime, Boolean approved)
 	{

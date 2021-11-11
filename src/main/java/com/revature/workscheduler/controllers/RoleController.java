@@ -41,7 +41,7 @@ public class RoleController {
     @DeleteMapping("roles/{id}")
     public boolean deleteRole(@PathVariable("id") int id) {
 
-        System.out.println("Deleting Actor");
+        System.out.println("Deleting Role");
         return as.delete(id);
     }
 }
