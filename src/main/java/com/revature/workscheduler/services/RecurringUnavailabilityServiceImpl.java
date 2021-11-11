@@ -33,7 +33,7 @@ public class RecurringUnavailabilityServiceImpl implements RecurringUnavailabili
 
     @Override
     public List<RecurringUnavailability> getRecurringUnavailabilityByTime(long startTime, long endTime) {
-        return Collections.emptyList(); // TODO implement
+        return rur.findTimeBetween(startTime, endTime); // TODO implement
     }
 }
 
