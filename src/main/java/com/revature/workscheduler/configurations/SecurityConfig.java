@@ -90,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	public UserDetailsService userDetailsService()
 	{
-		return this.userDetailsService;
+		return new EmployeeUserDetailsService();
 	}
 
 	@Bean
