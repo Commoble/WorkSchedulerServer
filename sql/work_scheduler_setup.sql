@@ -69,7 +69,7 @@ create table if not exists recurring_unavailabilities(
 
 insert into roles values
 	(default, 'Manager', true),
-	(defauly, 'clerk', false);
+	(default, 'clerk', false);
 
 insert into employees values
 	(default, 'Larry Manager', 'larrymanager', 'larrypassword', 0),
