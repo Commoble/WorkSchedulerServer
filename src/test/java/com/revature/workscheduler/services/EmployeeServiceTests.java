@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest(classes= WorkschedulerApplication.class)
@@ -164,10 +166,11 @@ public class EmployeeServiceTests
 		Employee employee = new Employee(employeeID, "Steve Testingperson", "stevet", "parseword", 0);
 		Role role = new Role(1, "Manager", true);
 		EmployeeRoleJunction junction = new EmployeeRoleJunction(1, employee, role);
-		boolean isManager = service.isEmployeeManager(employeeID);
+		List<EmployeeRoleJunction> junctions = Collections.singletonList(junction);
 		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
-				.thenReturn(junction);
-		Assertions.assertTrue(false); // TODO write test
+				.thenReturn(junctions);
+		boolean isManager = service.isEmployeeManager(employeeID);
+		Assertions.assertTrue(isManager);
 	}
 
 	@Test
