@@ -4,13 +4,13 @@ import com.revature.workscheduler.models.Employee;
 
 public class EmployeeResponse
 {
-	private int id;
+	private int employeeID;
 	private String name;
 	private long startDate;
 
 	public EmployeeResponse(Employee employee)
 	{
-		this.id = employee.getEmployeeID();
+		this.employeeID = employee.getEmployeeID();
 		this.name = employee.getName();
 		this.startDate = startDate;
 	}
