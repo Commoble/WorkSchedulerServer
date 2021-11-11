@@ -29,6 +29,9 @@ public class ScheduledShift
 	@Column(name="date", nullable=false)
 	private long date;
 
+	public ScheduledShift() {
+	}
+
 	public ScheduledShift(ShiftType shiftType, Employee employee, long date)
 	{
 		this(0, shiftType, employee, date);
