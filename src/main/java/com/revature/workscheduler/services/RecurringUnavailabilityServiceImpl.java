@@ -1,10 +1,8 @@
 package com.revature.workscheduler.services;
-
 import com.revature.workscheduler.models.RecurringUnavailability;
 import com.revature.workscheduler.repositories.RecurringUnavailabilityRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -25,25 +23,17 @@ public class RecurringUnavailabilityServiceImpl implements RecurringUnavailabili
      * @return The ID of the value
      */
     @Override
-    public Integer getIDFor(RecurringUnavailability value)
-    {
-        return value.getRecurringUnavailabilityID();
-    }
+    public Integer getIDFor(RecurringUnavailability value) {return value.getRecurringUnavailabilityID();}
 
     @Override
-    public List<RecurringUnavailability> getRecurringUnavailabilityByEmployee(int employee_id) {
-        return rur.findByEmployeeEmployeeID(employee_id);
-    }
+    public List<RecurringUnavailability> getRecurringUnavailabilityByEmployee(int employee_id) {return rur.findByEmployeeEmployeeID(employee_id);}
 
     @Override
-    public List<RecurringUnavailability> getRecurringUnavailabilityByWeekday(int weekday) {
-        return rur.findByWeekday(weekday);
-    }
+    public List<RecurringUnavailability> getRecurringUnavailabilityByWeekday(int weekday) {return rur.findByWeekday(weekday);}
 
     @Override
     public List<RecurringUnavailability> getRecurringUnavailabilityByTime(long startTime, long endTime) {
-
-        return Collections.emptyList(); // TODO implement
+        return rur.findTimeBetween(startTime, endTime); // TODO implement
     }
 }
 
