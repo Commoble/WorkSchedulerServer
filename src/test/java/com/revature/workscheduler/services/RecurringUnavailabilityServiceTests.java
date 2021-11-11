@@ -11,10 +11,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @SpringBootTest(classes= WorkschedulerApplication.class)
 public class RecurringUnavailabilityServiceTests {
 
@@ -24,6 +27,7 @@ public class RecurringUnavailabilityServiceTests {
     private RecurringUnavailabilityRepo rur;
 
     @Test
+    @Rollback
     void createRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -39,6 +43,7 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
+    @Rollback
     void updateRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -55,6 +60,7 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
+    @Rollback
     void deleteRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -67,6 +73,7 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
+    @Rollback
     void getRecurringUnavailabilityByEmployee(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
