@@ -11,7 +11,7 @@ import java.util.List;
 public class ScheduledShiftServiceImpl implements ScheduledShiftService {
 
     @Autowired
-    private ScheduledShiftRepo ssr;
+    ScheduledShiftRepo ssr;
 
 
     public ScheduledShiftRepo getRepo() {
