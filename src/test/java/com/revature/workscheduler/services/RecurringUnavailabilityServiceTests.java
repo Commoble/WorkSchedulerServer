@@ -80,22 +80,48 @@ public class RecurringUnavailabilityServiceTests {
         int empID = employee.getEmployeeID();
         Employee newRURsEmp = newRUR.getEmployee();
         int newRURsEmpId = newRURsEmp.getEmployeeID();
-
         Assertions.assertEquals(empID, newRURsEmpId);
-
         RecurringUnavailability actualRUR = service.add(newRUR);
         List<RecurringUnavailability> listAll = service.getAll();
+        service.getRecurringUnavailabilityByEmployee(empID);
         for(RecurringUnavailability x : listAll) {
             int derivedID = x.getEmployee().getEmployeeID();
             System.out.println(derivedID);
-            System.out.println("HELLO WORLD");
+//            System.out.println("HELLO WORLD");
             if (derivedID == empID){ Assertions.assertEquals(newRUR, x);}
         }
+
+
     }
 
     @Test
-    void getRecurringUnavailabilityByWeekday(){}
+    @Rollback
+    void getRecurringUnavailabilityByWeekday(){
+        int weekday = 1;
+        Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
+        RecurringUnavailability newRUR = new RecurringUnavailability(employee,weekday, /*Monday*/61200000, 18000000);
+        List<RecurringUnavailability> actualRUR = rur.findByWeekday(weekday);
+        try {
+            actualRUR.add(newRUR);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        for(RecurringUnavailability x : actualRUR) {
+            if (weekday == x.getWeekday()){ Assertions.assertEquals(newRUR, x);}
+        }
+        List<RecurringUnavailability> retrievedRUR = service.getRecurringUnavailabilityByWeekday(weekday);
+//        actualRUR.get(0).getWeekday()
+//        List<RecurringUnavailability> listAll = service.getAll();
+//        List<RecurringUnavailability> foundRURs = rur.findByWeekday(weekday);
+//        Mockito.when(rur.findByWeekday(weekday)).thenReturn(true);
+//        Assertions.assertEquals(foundRURs, newRUR);
+//         RecurringUnavailability foundRUR = foundRURs.get(0);
+//         Assertions.assertEquals(foundRUR, newRUR);
+
+    }
 
     @Test
-    void getRecurringUnavailabilityByTime(){}
+    void getRecurringUnavailabilityByTime(){
+        service.getRecurringUnavailabilityByTime(61200000, 18000000);
+    }
 }

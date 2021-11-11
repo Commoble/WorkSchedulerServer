@@ -12,6 +12,7 @@ public interface RecurringUnavailabilityRepo extends CrudRepository<RecurringUna
     //////////////////////////////////////// READ OPERATIONS ////////////////////////////////////////
     public List<RecurringUnavailability> findByEmployeeEmployeeID(int employee_id);
     public List<RecurringUnavailability> findByWeekday(int weekday);
+//    List<RecurringUnavailability> findTimeBetween(long startTime, long endTime);
 //    public List<RecurringUnavailability> getRecurringUnavailabilityByTime(long startTime, long endTime);
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
