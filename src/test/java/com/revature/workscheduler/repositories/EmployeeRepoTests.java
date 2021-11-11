@@ -8,13 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @SpringBootTest(classes = WorkschedulerApplication.class)
 @Transactional
@@ -123,14 +120,38 @@ public class EmployeeRepoTests
 	@Rollback
 	void findByUsernameFindsEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		// create employee
+		Employee expectedEmployee = this.repo.save(makeRandomEmployee());
+		String username = expectedEmployee.getUsername();
+		Employee actualEmployee = this.repo.findByUsername(username);
+		Assertions.assertEquals(expectedEmployee.getEmployeeID(), actualEmployee.getEmployeeID());
+		Assertions.assertEquals(expectedEmployee.getName(), actualEmployee.getName());
+		Assertions.assertEquals(expectedEmployee.getUsername(), actualEmployee.getUsername());
+		Assertions.assertEquals(expectedEmployee.getPassword(), actualEmployee.getPassword());
+		Assertions.assertEquals(expectedEmployee.getStartDate(), actualEmployee.getStartDate());
 	}
 
 	@Test
 	@Rollback
 	void findByUsernameDoesntFindMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		// create employee, then delete it
+		Employee expectedEmployee = this.repo.save(makeRandomEmployee());
+		int id = expectedEmployee.getEmployeeID();
+		String username = expectedEmployee.getUsername();
+		this.repo.deleteById(id);
+		Employee actualEmployee = this.repo.findByUsername(username);
+		Assertions.assertNull(actualEmployee);
+	}
+
+	@Test
+	@Rollback
+	void findByNullUsernameDoesntFindEmployee()
+	{
+		// username is a nonnull column in the DB,
+		// so there will never be an employee with a null username
+		Employee actualEmployee = this.repo.findByUsername(null);
+		Assertions.assertNull(actualEmployee);
 	}
 
 	private static Employee makeRandomEmployee()

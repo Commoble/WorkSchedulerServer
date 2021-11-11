@@ -2,7 +2,10 @@ package com.revature.workscheduler.services;
 
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
+import com.revature.workscheduler.models.EmployeeRoleJunction;
+import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.repositories.EmployeeRepo;
+import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,6 +23,9 @@ public class EmployeeServiceTests
 
 	@MockBean
 	private EmployeeRepo repo;
+
+	@MockBean
+	private EmployeeRoleJunctionRepo employeeRoleJunctionRepo;
 
 	@Test
 	void addEmployee()
@@ -119,20 +125,36 @@ public class EmployeeServiceTests
 	@Test
 	void getEmployeeByUsernameGetsEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		Employee expectedEmployee = new Employee(id, "Steve Testingperson", "stevet", "parseword", 0);
+		String username = "stevet";
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(expectedEmployee);
+		Employee actualEmployee = this.service.getEmployeeByUsername(username);
+		Assertions.assertEquals(expectedEmployee.getEmployeeID(), actualEmployee.getEmployeeID());
+		Assertions.assertEquals(expectedEmployee.getName(), actualEmployee.getName());
+		Assertions.assertEquals(expectedEmployee.getUsername(), actualEmployee.getUsername());
+		Assertions.assertEquals(expectedEmployee.getPassword(), actualEmployee.getPassword());
+		Assertions.assertEquals(expectedEmployee.getStartDate(), actualEmployee.getStartDate());
 	}
 
 	@Test
 	void getEmployeeByUsernameDoesntGetMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		String username = "stevet";
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(null);
+		Employee actualEmployee = this.service.getEmployeeByUsername(username);
+		Assertions.assertNull(actualEmployee);
 	}
 
 	@Test
 	void getEmployeeByUsernameDoesntGetEmployeeForNullUsername()
 	{
-		Employee employee = this.service.getEmployeeByUsername(null);
-		Assertions.assertNull(employee);
+		Mockito.when(this.repo.findByUsername(null))
+			.thenReturn(null);
+		Employee actualEmployee = this.service.getEmployeeByUsername(null);
+		Assertions.assertNull(actualEmployee);
 	}
 
 	@Test
@@ -140,7 +162,11 @@ public class EmployeeServiceTests
 	{
 		int employeeID = 1;
 		Employee employee = new Employee(employeeID, "Steve Testingperson", "stevet", "parseword", 0);
+		Role role = new Role(1, "Manager", true);
+		EmployeeRoleJunction junction = new EmployeeRoleJunction(1, employee, role);
 		boolean isManager = service.isEmployeeManager(employeeID);
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
+				.thenReturn(junction);
 		Assertions.assertTrue(false); // TODO write test
 	}
 
