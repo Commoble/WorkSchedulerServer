@@ -84,3 +84,6 @@ insert into shift_types values
 	(default, 'Morning Register', 18000000, 43200000), -- 5am to Noon
 	(default, 'Night Kitchen', 43200000, 68400000), -- Noon to 7pm
 	(default, 'Night Register', 43200000, 68400000); -- Noon to 7pm
+	
+insert into recurring_unavailabilities(
+	(default, 1, 0, 18000000, 43200000);
