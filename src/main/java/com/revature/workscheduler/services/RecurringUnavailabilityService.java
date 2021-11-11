@@ -5,7 +5,6 @@ import com.revature.workscheduler.repositories.RecurringUnavailabilityRepo;
 
 import java.util.List;
 
-
 public interface RecurringUnavailabilityService extends CrudService<RecurringUnavailability, Integer, RecurringUnavailabilityRepo>
 {
 

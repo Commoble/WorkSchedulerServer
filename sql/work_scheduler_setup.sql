@@ -68,11 +68,13 @@ create table if not exists recurring_unavailabilities(
 );
 
 insert into roles values
-	(default, 'Manager', true);
+	(default, 'Manager', true),
+	(default, 'clerk', false);
 
 insert into employees values
 	(default, 'Larry Manager', 'larrymanager', 'larrypassword', 0),
 	(default, 'Steve Clerk', 'steveclerk', 'stevepassword', 0);
 
 insert into employee_role_junctions values
-	(default, 1, 1) -- assign manager role to Larry Manager;
+	(default, 1, 1), -- assign manager role to Larry Manager;
+	(default, 2,2);
