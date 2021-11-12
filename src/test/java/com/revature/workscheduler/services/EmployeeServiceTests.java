@@ -190,12 +190,12 @@ public class EmployeeServiceTests
 	@Test
 	void getLoggedInEmployeeGetsLoggedInEmployee()
 	{
-
+		Assertions.assertTrue(false); // TODO write test
 	}
 
 	@Test
 	void getLoggedInEmployeeDoesntGetNotLoggedInEmployee()
 	{
-
+		Assertions.assertTrue(false); // TODO write test
 	}
 }
