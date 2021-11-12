@@ -40,7 +40,17 @@ public class ScheduledShiftServiceTest {
         Assertions.assertNotEquals(get, give.getScheduledShiftID());
     }
 
+    @Test
+    void getScheduledShiftsForEmployeeGetsScheduledShifts()
+    {
+        Assertions.assertTrue(false); // TODO write tests
+    }
 
+    @Test
+    void getScheduledShiftsForEmployeeDoesntGetScheduledShiftsForMissingEmployee()
+    {
+        Assertions.assertTrue(false); // TODO write tests
+    }
 
 
 }

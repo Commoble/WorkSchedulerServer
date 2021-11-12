@@ -22,6 +22,11 @@ public class ScheduledShiftServiceImpl implements ScheduledShiftService {
         return value.getScheduledShiftID();
     }
 
+    @Override
+    public List<ScheduledShift> getScheduledShiftsForEmployee(int employeeID)
+    {
+        return this.ssr.findByEmployeeEmployeeID(employeeID);
+    }
 
 //    @Override
 //    public ScheduledShift addScheduledShift(ScheduledShift a) {

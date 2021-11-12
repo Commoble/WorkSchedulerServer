@@ -14,5 +14,11 @@ public interface ScheduledShiftService extends CrudService <ScheduledShift, Inte
 //    public List<ScheduledShift> getAllScheduledShift();
 //    public ScheduledShift updateScheduledShift(ScheduledShift change);
 
+	/**
+	 * Gets all the shifts scheduled for this employee
+	 * @param employeeID
+	 * @return scheduled shifts; returns empty list if employee not found
+	 */
+	public List<ScheduledShift> getScheduledShiftsForEmployee(int employeeID);
 
 }
