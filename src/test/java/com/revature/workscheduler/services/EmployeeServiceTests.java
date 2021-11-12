@@ -177,10 +177,15 @@ public class EmployeeServiceTests
 	@Test
 	void isEmployeeManagerIsFalseForNotManager()
 	{
-		int id = 1;
-		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(id))
-			.thenReturn(Collections.emptyList());
-		boolean isManager = this.service.isEmployeeManager(id);
+		int employeeID = 1;
+		Employee mockEmployee = ModelGenerators.makeRandomEmployee();
+		mockEmployee.setEmployeeID(employeeID);
+		Role mockRole = new Role(1, "Test Role", false);
+		EmployeeRoleJunction mockJunction = new EmployeeRoleJunction(1, mockEmployee, mockRole);
+		List<EmployeeRoleJunction> mockJunctions = Collections.singletonList(mockJunction);
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
+			.thenReturn(mockJunctions);
+		boolean isManager = this.service.isEmployeeManager(employeeID);
 		Assertions.assertFalse(isManager);
 	}
 
@@ -188,8 +193,10 @@ public class EmployeeServiceTests
 	void isEmployeeManagerIsFalseForMissingEmployee()
 	{
 		int id = 1;
-		Mockito.when(repo.findById(1)).thenReturn(Optional.empty());
-		Assertions.assertFalse(this.service.isEmployeeManager(id));
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(id))
+			.thenReturn(Collections.emptyList());
+		boolean isManager = this.service.isEmployeeManager(id);
+		Assertions.assertFalse(isManager);
 	}
 
 	@Test
