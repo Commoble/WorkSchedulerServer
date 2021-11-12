@@ -13,9 +13,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @SpringBootTest(classes= WorkschedulerApplication.class)
@@ -199,15 +201,27 @@ public class EmployeeServiceTests
 		Assertions.assertFalse(isManager);
 	}
 
+
 	@Test
+	@WithMockUser(username="stevet", password="password", roles="USER")
 	void getLoggedInEmployeeGetsLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		String username = "stevet";
+		String password = "password";
+		Employee mockEmployee = new Employee(id, "Steve Testperson", username, password, 0);
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(mockEmployee);
+		Employee actualEmployee = this.service.getLoggedInEmployee();
+		Assertions.assertEquals(id, actualEmployee.getEmployeeID());
 	}
 
 	@Test
+	@WithMockUser(username="stevet", password="password", roles="USER")
 	void getLoggedInEmployeeDoesntGetNotLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		Mockito.when(this.repo.findByUsername("stevet"))
+			.thenReturn(null);
+		Assertions.assertNull(this.service.getLoggedInEmployee());
 	}
 }
