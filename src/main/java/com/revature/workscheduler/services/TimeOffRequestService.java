@@ -9,4 +9,5 @@ public interface TimeOffRequestService extends CrudService<TimeOffRequest, Integ
 {
     public List<TimeOffRequest> getByEmployeeID(int id);
     public List<TimeOffRequest> getPendingRequests();
+    public List<TimeOffRequest> getNotDeniedRequestsForEmployee(int employeeID);
 }

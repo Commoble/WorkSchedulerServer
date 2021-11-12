@@ -36,4 +36,10 @@ public class TimeOffRequestServiceImpl implements TimeOffRequestService
     {
         return torr.findByApprovedNull();
     }
+
+    @Override
+    public List<TimeOffRequest> getNotDeniedRequestsForEmployee(int employeeID)
+    {
+        return torr.findByEmployeeEmployeeIDAndApprovedNotFalse(employeeID);
+    }
 }

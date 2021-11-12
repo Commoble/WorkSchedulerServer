@@ -40,6 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService
 	private ScheduledShiftService scheduledShiftService;
 
 	@Autowired
+	private TimeOffRequestService timeOffRequestService;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	@Override
