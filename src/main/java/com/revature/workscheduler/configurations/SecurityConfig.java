@@ -2,6 +2,7 @@ package com.revature.workscheduler.configurations;
 
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
+import com.revature.workscheduler.services.EmployeeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +34,9 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
+	@Autowired
+	UserDetailsService userDetailsService;
+
 	@Autowired
 	EmployeeService employeeService;
 
@@ -72,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	public void configureGlobal(AuthenticationManagerBuilder authentication)
 		throws Exception
 	{
-		authentication.userDetailsService(this.employeeService);
+		authentication.userDetailsService(this.userDetailsService);
 	}
 
 	@Bean
@@ -85,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	public UserDetailsService userDetailsService()
 	{
-		return this.employeeService;
+		return new EmployeeUserDetailsService();
 	}
 
 	@Bean
