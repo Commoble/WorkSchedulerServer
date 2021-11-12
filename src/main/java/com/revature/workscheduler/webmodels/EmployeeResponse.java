@@ -12,6 +12,21 @@ public class EmployeeResponse
 	{
 		this.employeeID = employee.getEmployeeID();
 		this.name = employee.getName();
-		this.startDate = startDate;
+		this.startDate = employee.getStartDate();
+	}
+
+	public int getEmployeeID()
+	{
+		return employeeID;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public long getStartDate()
+	{
+		return startDate;
 	}
 }
