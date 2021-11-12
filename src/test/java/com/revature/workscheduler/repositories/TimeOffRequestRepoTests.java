@@ -3,6 +3,7 @@ package com.revature.workscheduler.repositories;
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.TimeOffRequest;
+import com.revature.workscheduler.testutils.ModelGenerators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,19 @@ public class TimeOffRequestRepoTests
 	@Rollback
 	void findByEmployeeEmployeeIDDoesntFindRequestsForMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write tests
+		// create employee and time off request
+		Employee employee = this.employeeRepo.save(ModelGenerators.makeRandomEmployee());
+		int employeeID = employee.getEmployeeID();
+		TimeOffRequest request = this.repo.save(new TimeOffRequest(employee, 0, 1, true));
+
+		// delete employee
+		this.employeeRepo.deleteById(employeeID);
+
+		// get employee's time off requests
+		List<TimeOffRequest> requests = this.repo.findByEmployeeEmployeeID(employeeID);
+
+		// list should be empty
+		Assertions.assertTrue(requests.isEmpty());
 	}
 
 	@Test
