@@ -6,9 +6,11 @@ import com.revature.workscheduler.models.EmployeeShiftTypeJunction;
 import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.models.ScheduledShift;
 import com.revature.workscheduler.models.ShiftType;
+import com.revature.workscheduler.models.TimeOffRequest;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
 import com.revature.workscheduler.repositories.EmployeeShiftTypeJunctionRepo;
+import com.revature.workscheduler.utils.MathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -88,16 +90,23 @@ public class EmployeeServiceImpl implements EmployeeService
 					long date = shift.getDate(); // start of day in unix epoch millis
 					long shiftStartTime = date + shiftType.getStartTime();
 					long shiftEndTime = date + shiftType.getEndTime();
-					if ((shiftStartTime >= startTime && shiftStartTime <= endTime)
-						||(shiftEndTime >= startTime && shiftEndTime <= endTime))
+					if (MathUtils.doesTimeOverlap(shiftStartTime, shiftEndTime, startTime, endTime))
 					{
 						return false;
 					}
 				}
 
 				// check if employee has conflicts in time off
+				List<TimeOffRequest> requests = this.timeOffRequestService.getNotDeniedRequestsForEmployee(employeeID);
+				for (TimeOffRequest timeOffRequest : requests)
+				{
+					if (MathUtils.doesTimeOverlap(timeOffRequest.getStartTime(), timeOffRequest.getEndTime(), startTime, endTime))
+					{
+						return false;
+					}
+				}
 
-				// check if employee has conflicts in unavailability
+				// TODO check against recurring unavailability
 
 				return true;
 			})
