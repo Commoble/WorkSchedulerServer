@@ -136,56 +136,37 @@ public class EmployeeServiceTests
 	}
 
 	@Test
-	void employeeThatCanCreateShiftsCanCreateShifts()
+	void isEmployeeManagerIsTrueForManager()
+	{
+		int employeeID = 1;
+		Employee employee = new Employee(employeeID, "Steve Testingperson", "stevet", "parseword", 0);
+		boolean isManager = service.isEmployeeManager(employeeID);
+		Assertions.assertTrue(false); // TODO write test
+	}
+
+	@Test
+	void isEmployeeManagerIsFalseForNotManager()
 	{
 		Assertions.assertTrue(false); // TODO write test
 	}
 
 	@Test
-	void employeeThatCannotCreateShiftsCannotCreateShifts()
+	void isEmployeeManagerIsFalseForMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		Mockito.when(repo.findById(1)).thenReturn(Optional.empty());
+		Assertions.assertFalse(this.service.isEmployeeManager(id));
 	}
 
 	@Test
-	void missingEmployeeCannotCreateShifts()
+	void getLoggedInEmployeeGetsLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+
 	}
 
 	@Test
-	void employeeThatCanAssignShiftsCanAssignShifts()
+	void getLoggedInEmployeeDoesntGetNotLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
-	}
 
-	@Test
-	void employeeThatCannotAssignShiftsCannotAssignShifts()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void missingEmployeeCannotAssignShifts()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void employeeThatCanApproveTimeOffCanApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void employeeThatCannotApproveTimeOffCannotApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void missingEmployeeCannotApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
 	}
 }
