@@ -6,6 +6,7 @@ import com.revature.workscheduler.models.EmployeeRoleJunction;
 import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
+import com.revature.workscheduler.testutils.ModelGenerators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -176,7 +177,11 @@ public class EmployeeServiceTests
 	@Test
 	void isEmployeeManagerIsFalseForNotManager()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(id))
+			.thenReturn(Collections.emptyList());
+		boolean isManager = this.service.isEmployeeManager(id);
+		Assertions.assertFalse(isManager);
 	}
 
 	@Test
