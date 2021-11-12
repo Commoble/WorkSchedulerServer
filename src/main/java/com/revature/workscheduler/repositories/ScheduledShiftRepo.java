@@ -11,7 +11,6 @@ public interface ScheduledShiftRepo extends CrudRepository<ScheduledShift, Integ
 {
 
     List<ScheduledShift> findByDate(long date);
-    List<ScheduledShift> findByScheduledShiftID(int id);
 
     /**
      * Gets all the shifts scheduled for the given employee
