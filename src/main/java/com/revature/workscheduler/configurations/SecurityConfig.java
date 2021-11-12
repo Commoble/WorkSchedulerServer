@@ -3,6 +3,7 @@ package com.revature.workscheduler.configurations;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.services.EmployeeUserDetailsService;
+import com.revature.workscheduler.utils.LoggedInEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -95,21 +96,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
 	@Bean
 	@RequestScope
-	public Employee getLoggedInEmployee()
+	public LoggedInEmployee getLoggedInEmployee()
 	{
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		if (authentication == null)
-			return null;
+			return new LoggedInEmployee(null);
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof UserDetails)
 		{
 			String username = ((UserDetails) principal).getUsername();
-			return this.employeeService.getEmployeeByUsername(username);
+			return new LoggedInEmployee(this.employeeService.getEmployeeByUsername(username));
 		}
 		else
 		{
-			return null;
+			return new LoggedInEmployee(null);
 		}
 	}
 }
