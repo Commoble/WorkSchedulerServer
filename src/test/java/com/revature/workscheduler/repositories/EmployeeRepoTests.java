@@ -2,19 +2,16 @@ package com.revature.workscheduler.repositories;
 
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
+import com.revature.workscheduler.testutils.ModelGenerators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 @SpringBootTest(classes = WorkschedulerApplication.class)
 @Transactional
@@ -52,7 +49,7 @@ public class EmployeeRepoTests
 	@Rollback
 	void addEmployee()
 	{
-		Employee employee = makeRandomEmployee();
+		Employee employee = ModelGenerators.makeRandomEmployee();
 		int oldID = employee.getEmployeeID();
 		Employee savedEmployee = this.repo.save(employee);
 		int newID = savedEmployee.getEmployeeID();
@@ -63,7 +60,7 @@ public class EmployeeRepoTests
 	@Rollback
 	void getEmployeeGetsEmployee()
 	{
-		Employee employee = makeRandomEmployee();
+		Employee employee = ModelGenerators.makeRandomEmployee();
 		Employee savedEmployee = this.repo.save(employee);
 		int id = savedEmployee.getEmployeeID();
 		Employee actualEmployee = this.repo.findById(id).get();
@@ -79,7 +76,7 @@ public class EmployeeRepoTests
 	void getMissingEmployeeDoesntGetEmployee()
 	{
 		// create employee, then delete it, then get it
-		Employee employee = makeRandomEmployee();
+		Employee employee = ModelGenerators.makeRandomEmployee();
 		Employee savedEmployee = this.repo.save(employee);
 		int id = savedEmployee.getEmployeeID();
 		this.repo.deleteById(id);
@@ -91,7 +88,7 @@ public class EmployeeRepoTests
 	void updateEmployeeUpdatesEmployee()
 	{
 		// create employee, then update it
-		Employee employee = makeRandomEmployee();
+		Employee employee = ModelGenerators.makeRandomEmployee();
 		Employee createdEmployee = this.repo.save(employee);
 		int id = createdEmployee.getEmployeeID();
 		createdEmployee.setName(employee.getName() + "update");
@@ -112,7 +109,7 @@ public class EmployeeRepoTests
 	void deleteEmployeeDeletesEmployee()
 	{
 		// create employee, then delete it
-		Employee employee = makeRandomEmployee();
+		Employee employee = ModelGenerators.makeRandomEmployee();
 		Employee createdEmployee = this.repo.save(employee);
 		int id = createdEmployee.getEmployeeID();
 		this.repo.deleteById(id);
@@ -123,28 +120,37 @@ public class EmployeeRepoTests
 	@Rollback
 	void findByUsernameFindsEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		// create employee
+		Employee expectedEmployee = this.repo.save(ModelGenerators.makeRandomEmployee());
+		String username = expectedEmployee.getUsername();
+		Employee actualEmployee = this.repo.findByUsername(username);
+		Assertions.assertEquals(expectedEmployee.getEmployeeID(), actualEmployee.getEmployeeID());
+		Assertions.assertEquals(expectedEmployee.getName(), actualEmployee.getName());
+		Assertions.assertEquals(expectedEmployee.getUsername(), actualEmployee.getUsername());
+		Assertions.assertEquals(expectedEmployee.getPassword(), actualEmployee.getPassword());
+		Assertions.assertEquals(expectedEmployee.getStartDate(), actualEmployee.getStartDate());
 	}
 
 	@Test
 	@Rollback
 	void findByUsernameDoesntFindMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		// create employee, then delete it
+		Employee expectedEmployee = this.repo.save(ModelGenerators.makeRandomEmployee());
+		int id = expectedEmployee.getEmployeeID();
+		String username = expectedEmployee.getUsername();
+		this.repo.deleteById(id);
+		Employee actualEmployee = this.repo.findByUsername(username);
+		Assertions.assertNull(actualEmployee);
 	}
 
-	private static Employee makeRandomEmployee()
+	@Test
+	@Rollback
+	void findByNullUsernameDoesntFindEmployee()
 	{
-		long time = System.currentTimeMillis();
-		Random rand = new Random(time);
-		int nameChars = 10 + rand.nextInt(10);
-		StringBuilder builder = new StringBuilder();
-		for (int i=0; i<nameChars; i++)
-		{
-			char nextChar = (char) ('a' + rand.nextInt(26));
-			builder.append(nextChar);
-		}
-		String name = builder.toString();
-		return new Employee(name,name,name,time);
+		// username is a nonnull column in the DB,
+		// so there will never be an employee with a null username
+		Employee actualEmployee = this.repo.findByUsername(null);
+		Assertions.assertNull(actualEmployee);
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface EmployeeService extends CrudService<Employee, Integer, EmployeeRepo>, UserDetailsService
+public interface EmployeeService extends CrudService<Employee, Integer, EmployeeRepo>
 {
 	/**
 	 * Gets all employees that can be assigned to the given shift type

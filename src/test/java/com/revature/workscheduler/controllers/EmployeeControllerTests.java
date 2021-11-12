@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.services.EmployeeService;
+import com.revature.workscheduler.webmodels.EmployeeResponse;
+import com.revature.workscheduler.webmodels.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,17 +36,41 @@ public class EmployeeControllerTests
 	void getLoggedInEmployeeGetsLoggedInEmployee() throws Exception
 	{
 		int id = 1;
-		Employee expectedEmployee = new Employee(id, "Steve Testingperson","stevet", "parseword", 0);
+		Employee expectedEmployee = new Employee(id, "Steve Testingperson","stevet", "parseword", 12);
 		Mockito.when(service.getLoggedInEmployee())
 			.thenReturn(expectedEmployee);
+		Mockito.when(service.isEmployeeManager(id))
+			.thenReturn(false);
 		String response = mvc.perform(MockMvcRequestBuilders.get("/login"))
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andReturn()
 			.getResponse()
 			.getContentAsString();
-		Employee actualEmployee = GSON.fromJson(response, Employee.class);
+		LoginResponse actualResponse = GSON.fromJson(response, LoginResponse.class);
+		Assertions.assertFalse(actualResponse.isManager());
+		EmployeeResponse actualEmployee = actualResponse.getEmployee();
 		Assertions.assertEquals(expectedEmployee.getEmployeeID(), actualEmployee.getEmployeeID());
 		Assertions.assertEquals(expectedEmployee.getName(), actualEmployee.getName());
+		Assertions.assertEquals(expectedEmployee.getStartDate(), actualEmployee.getStartDate());
+	}
+
+	@Test
+	@WithMockUser(username="stevet", password="parseword", roles={"USER", "MANAGER"})
+	void getLoggedInManagerGetsLoggedInManager() throws Exception
+	{
+		int id = 1;
+		Employee expectedEmployee = new Employee(id, "Steve Testingperson","stevet", "parseword", 12);
+		Mockito.when(service.getLoggedInEmployee())
+			.thenReturn(expectedEmployee);
+		Mockito.when(service.isEmployeeManager(id))
+			.thenReturn(true);
+		String response = mvc.perform(MockMvcRequestBuilders.get("/login"))
+			.andExpect(MockMvcResultMatchers.status().isOk())
+			.andReturn()
+			.getResponse()
+			.getContentAsString();
+		LoginResponse actualResponse = GSON.fromJson(response, LoginResponse.class);
+		Assertions.assertTrue(actualResponse.isManager());
 	}
 
 	@Test

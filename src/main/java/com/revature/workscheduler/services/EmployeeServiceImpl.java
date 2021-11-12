@@ -4,9 +4,14 @@ import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.EmployeeRoleJunction;
 import com.revature.workscheduler.models.EmployeeShiftTypeJunction;
 import com.revature.workscheduler.models.Role;
+import com.revature.workscheduler.models.ScheduledShift;
+import com.revature.workscheduler.models.ShiftType;
+import com.revature.workscheduler.models.TimeOffRequest;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
 import com.revature.workscheduler.repositories.EmployeeShiftTypeJunctionRepo;
+import com.revature.workscheduler.utils.LoggedInEmployee;
+import com.revature.workscheduler.utils.MathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,13 +31,19 @@ public class EmployeeServiceImpl implements EmployeeService
 	private EmployeeRepo repo;
 
 	@Autowired
-	private Employee loggedInEmployee;
+	private LoggedInEmployee loggedInEmployee;
 
 	@Autowired
 	private EmployeeShiftTypeJunctionRepo employeeShiftTypeJunctionRepo;
 
 	@Autowired
 	private EmployeeRoleJunctionRepo employeeRoleJunctionRepo;
+
+	@Autowired
+	private ScheduledShiftService scheduledShiftService;
+
+	@Autowired
+	private TimeOffRequestService timeOffRequestService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -61,7 +72,46 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	public List<Employee> getAssignableEmployees(int shiftTypeID, long startTime, long endTime)
 	{
-		return this.getAll(); // TODO implement filtering
+		// TODO optimize by doing more filtering in DB queries
+		// get all employees that
+		// A) can be assigned to the given shift type, and
+		// B) are not already scheduled in the given time, and
+		// C) have no time off pending or approved in the given time
+		// D) have no recurring unavailabilities in the given time
+		return this.employeeShiftTypeJunctionRepo.findByEmployeeEmployeeID(shiftTypeID)
+			.stream()
+			.map(EmployeeShiftTypeJunction::getEmployee)
+			.filter(employee ->{
+				int employeeID = employee.getEmployeeID();
+				List<ScheduledShift> shifts = this.scheduledShiftService.getScheduledShiftsForEmployee(employeeID);
+				// check if employee has any previously scheduled shifts
+				for (ScheduledShift shift : shifts)
+				{
+					ShiftType shiftType = shift.getShiftType();
+					long date = shift.getDate(); // start of day in unix epoch millis
+					long shiftStartTime = date + shiftType.getStartTime();
+					long shiftEndTime = date + shiftType.getEndTime();
+					if (MathUtils.doesTimeOverlap(shiftStartTime, shiftEndTime, startTime, endTime))
+					{
+						return false;
+					}
+				}
+
+				// check if employee has conflicts in time off
+				List<TimeOffRequest> requests = this.timeOffRequestService.getNotDeniedRequestsForEmployee(employeeID);
+				for (TimeOffRequest timeOffRequest : requests)
+				{
+					if (MathUtils.doesTimeOverlap(timeOffRequest.getStartTime(), timeOffRequest.getEndTime(), startTime, endTime))
+					{
+						return false;
+					}
+				}
+
+				// TODO check against recurring unavailability
+
+				return true;
+			})
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -92,38 +142,6 @@ public class EmployeeServiceImpl implements EmployeeService
 	}
 
 	/**
-	 * Locates the user based on the username. In the actual implementation, the search
-	 * may possibly be case sensitive, or case insensitive depending on how the
-	 * implementation instance is configured. In this case, the <code>UserDetails</code>
-	 * object that comes back may have a username that is of a different case than what
-	 * was actually requested..
-	 *
-	 * @param username the username identifying the user whose data is required.
-	 * @return a fully populated user record (never <code>null</code>)
-	 * @throws UsernameNotFoundException if the user could not be found or the user has no
-	 *                                   GrantedAuthority
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
-	{
-		Employee employee = this.getEmployeeByUsername(username);
-		if (employee == null)
-			throw new UsernameNotFoundException("No employee found for username " + username);
-		List<String> roles = new ArrayList<>();
-		roles.add("USER");
-		if (this.isEmployeeManager(employee.getEmployeeID()))
-		{
-			roles.add("MANAGER");
-		}
-		return User.builder()
-			.username(employee.getUsername())
-			.password(employee.getPassword())
-			.passwordEncoder(passwordEncoder::encode)
-			.roles(roles.toArray(new String[roles.size()]))
-			.build();
-	}
-
-	/**
 	 * Returns the employee logged into the current session.
 	 * Only usable during an HTTP request.
 	 *
@@ -132,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	public Employee getLoggedInEmployee()
 	{
-		return this.loggedInEmployee;
+		return this.loggedInEmployee.getEmployee();
 	}
 }
 

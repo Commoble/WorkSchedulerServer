@@ -27,7 +27,6 @@ public class ScheduledShiftServiceTest {
     @MockBean
     private ScheduledShiftRepo sr;
 
-
     @Test
     void addScheduledShift() {
         ScheduledShift MS = new ScheduledShift(0, new ShiftType(), new Employee(), 1);
@@ -45,6 +44,18 @@ public class ScheduledShiftServiceTest {
         List<ScheduledShift> stList = new LinkedList<>();
         List<ScheduledShift> stList2 = ss.getAll();
         Assertions.assertEquals(stList.getClass(), stList2.getClass());
+    }
+
+    @Test
+    void getScheduledShiftsForEmployeeGetsScheduledShifts()
+    {
+        Assertions.assertTrue(false); // TODO write tests
+    }
+
+    @Test
+    void getScheduledShiftsForEmployeeDoesntGetScheduledShiftsForMissingEmployee()
+    {
+        Assertions.assertTrue(false); // TODO write tests
     }
 
 

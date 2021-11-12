@@ -2,14 +2,22 @@ package com.revature.workscheduler.services;
 
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
+import com.revature.workscheduler.models.EmployeeRoleJunction;
+import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.repositories.EmployeeRepo;
+import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
+import com.revature.workscheduler.testutils.ModelGenerators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @SpringBootTest(classes= WorkschedulerApplication.class)
@@ -20,6 +28,9 @@ public class EmployeeServiceTests
 
 	@MockBean
 	private EmployeeRepo repo;
+
+	@MockBean
+	private EmployeeRoleJunctionRepo employeeRoleJunctionRepo;
 
 	@Test
 	void addEmployee()
@@ -119,73 +130,98 @@ public class EmployeeServiceTests
 	@Test
 	void getEmployeeByUsernameGetsEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		Employee expectedEmployee = new Employee(id, "Steve Testingperson", "stevet", "parseword", 0);
+		String username = "stevet";
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(expectedEmployee);
+		Employee actualEmployee = this.service.getEmployeeByUsername(username);
+		Assertions.assertEquals(expectedEmployee.getEmployeeID(), actualEmployee.getEmployeeID());
+		Assertions.assertEquals(expectedEmployee.getName(), actualEmployee.getName());
+		Assertions.assertEquals(expectedEmployee.getUsername(), actualEmployee.getUsername());
+		Assertions.assertEquals(expectedEmployee.getPassword(), actualEmployee.getPassword());
+		Assertions.assertEquals(expectedEmployee.getStartDate(), actualEmployee.getStartDate());
 	}
 
 	@Test
 	void getEmployeeByUsernameDoesntGetMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		String username = "stevet";
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(null);
+		Employee actualEmployee = this.service.getEmployeeByUsername(username);
+		Assertions.assertNull(actualEmployee);
 	}
 
 	@Test
 	void getEmployeeByUsernameDoesntGetEmployeeForNullUsername()
 	{
-		Employee employee = this.service.getEmployeeByUsername(null);
-		Assertions.assertNull(employee);
+		Mockito.when(this.repo.findByUsername(null))
+			.thenReturn(null);
+		Employee actualEmployee = this.service.getEmployeeByUsername(null);
+		Assertions.assertNull(actualEmployee);
 	}
 
 	@Test
-	void employeeThatCanCreateShiftsCanCreateShifts()
+	void isEmployeeManagerIsTrueForManager()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int employeeID = 1;
+		Employee employee = new Employee(employeeID, "Steve Testingperson", "stevet", "parseword", 0);
+		Role role = new Role(1, "Manager", true);
+		EmployeeRoleJunction junction = new EmployeeRoleJunction(1, employee, role);
+		List<EmployeeRoleJunction> junctions = Collections.singletonList(junction);
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
+				.thenReturn(junctions);
+		boolean isManager = service.isEmployeeManager(employeeID);
+		Assertions.assertTrue(isManager);
 	}
 
 	@Test
-	void employeeThatCannotCreateShiftsCannotCreateShifts()
+	void isEmployeeManagerIsFalseForNotManager()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int employeeID = 1;
+		Employee mockEmployee = ModelGenerators.makeRandomEmployee();
+		mockEmployee.setEmployeeID(employeeID);
+		Role mockRole = new Role(1, "Test Role", false);
+		EmployeeRoleJunction mockJunction = new EmployeeRoleJunction(1, mockEmployee, mockRole);
+		List<EmployeeRoleJunction> mockJunctions = Collections.singletonList(mockJunction);
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
+			.thenReturn(mockJunctions);
+		boolean isManager = this.service.isEmployeeManager(employeeID);
+		Assertions.assertFalse(isManager);
 	}
 
 	@Test
-	void missingEmployeeCannotCreateShifts()
+	void isEmployeeManagerIsFalseForMissingEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(id))
+			.thenReturn(Collections.emptyList());
+		boolean isManager = this.service.isEmployeeManager(id);
+		Assertions.assertFalse(isManager);
+	}
+
+
+	@Test
+	@WithMockUser(username="stevet", password="password", roles="USER")
+	void getLoggedInEmployeeGetsLoggedInEmployee()
+	{
+		int id = 1;
+		String username = "stevet";
+		String password = "password";
+		Employee mockEmployee = new Employee(id, "Steve Testperson", username, password, 0);
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(mockEmployee);
+		Employee actualEmployee = this.service.getLoggedInEmployee();
+		Assertions.assertEquals(id, actualEmployee.getEmployeeID());
 	}
 
 	@Test
-	void employeeThatCanAssignShiftsCanAssignShifts()
+	@WithMockUser(username="stevet", password="password", roles="USER")
+	void getLoggedInEmployeeDoesntGetNotLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void employeeThatCannotAssignShiftsCannotAssignShifts()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void missingEmployeeCannotAssignShifts()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void employeeThatCanApproveTimeOffCanApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void employeeThatCannotApproveTimeOffCannotApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
-	}
-
-	@Test
-	void missingEmployeeCannotApproveTimeOff()
-	{
-		Assertions.assertTrue(false); // TODO write test
+		Mockito.when(this.repo.findByUsername("stevet"))
+			.thenReturn(null);
+		Assertions.assertNull(this.service.getLoggedInEmployee());
 	}
 }
