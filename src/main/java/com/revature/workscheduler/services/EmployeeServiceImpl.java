@@ -4,6 +4,8 @@ import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.EmployeeRoleJunction;
 import com.revature.workscheduler.models.EmployeeShiftTypeJunction;
 import com.revature.workscheduler.models.Role;
+import com.revature.workscheduler.models.ScheduledShift;
+import com.revature.workscheduler.models.ShiftType;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
 import com.revature.workscheduler.repositories.EmployeeShiftTypeJunctionRepo;
@@ -33,6 +35,12 @@ public class EmployeeServiceImpl implements EmployeeService
 
 	@Autowired
 	private EmployeeRoleJunctionRepo employeeRoleJunctionRepo;
+
+	@Autowired
+	private ScheduledShiftService scheduledShiftService;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public EmployeeRepo getRepo()
@@ -58,7 +66,39 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	public List<Employee> getAssignableEmployees(int shiftTypeID, long startTime, long endTime)
 	{
-		return this.getAll(); // TODO implement filtering
+		// TODO optimize by doing more filtering in DB queries
+		// get all employees that
+		// A) can be assigned to the given shift type, and
+		// B) are not already scheduled in the given time, and
+		// C) have no time off pending or approved in the given time
+		// D) have no recurring unavailabilities in the given time
+		return this.employeeShiftTypeJunctionRepo.findByEmployeeEmployeeID(shiftTypeID)
+			.stream()
+			.map(EmployeeShiftTypeJunction::getEmployee)
+			.filter(employee ->{
+				int employeeID = employee.getEmployeeID();
+				List<ScheduledShift> shifts = this.scheduledShiftService.getScheduledShiftsForEmployee(employeeID);
+				// check if employee has any previously scheduled shifts
+				for (ScheduledShift shift : shifts)
+				{
+					ShiftType shiftType = shift.getShiftType();
+					long date = shift.getDate(); // start of day in unix epoch millis
+					long shiftStartTime = date + shiftType.getStartTime();
+					long shiftEndTime = date + shiftType.getEndTime();
+					if ((shiftStartTime >= startTime && shiftStartTime <= endTime)
+						||(shiftEndTime >= startTime && shiftEndTime <= endTime))
+					{
+						return false;
+					}
+				}
+
+				// check if employee has conflicts in time off
+
+				// check if employee has conflicts in unavailability
+
+				return true;
+			})
+			.collect(Collectors.toList());
 	}
 
 	/**
