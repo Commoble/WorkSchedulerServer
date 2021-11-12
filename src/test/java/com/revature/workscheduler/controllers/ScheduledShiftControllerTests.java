@@ -28,7 +28,8 @@ import java.util.List;
 
 
 
-public class ScheduledShiftController {
+public class ScheduledShiftControllerTests
+{
 
     @MockBean
     private ScheduledShiftService ss;
