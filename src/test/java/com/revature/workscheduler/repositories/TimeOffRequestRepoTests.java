@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.List;
 
 @SpringBootTest(classes = WorkschedulerApplication.class)
@@ -67,14 +68,43 @@ public class TimeOffRequestRepoTests
 	@Rollback
 	void findByApprovedNullFindsRequests()
 	{
-		Assertions.assertTrue(false); // TODO write tests
+		// make an employee and three time off requests
+		Employee employee = this.employeeRepo.save(ModelGenerators.makeRandomEmployee());
+		TimeOffRequest approvedRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, true));
+		TimeOffRequest pendingRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, null));
+		TimeOffRequest deniedRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, false));
+
+		// get pending request
+		List<TimeOffRequest> requests = this.repo.findByApprovedNull();
+
+		// there should be at least one request and all requests should be pending
+		Assertions.assertTrue(requests.size() > 0);
+		requests.forEach(actualRequest -> Assertions.assertNull(actualRequest.getApproved()));
 	}
 
 	@Test
 	@Rollback
 	void findByEmployeeEmployeeIDAndApprovedNotFalseFindsRequests()
 	{
-		Assertions.assertTrue(false); // TODO write tests
+		// make an employee and three time off requests
+		Employee employee = this.employeeRepo.save(ModelGenerators.makeRandomEmployee());
+		int employeeID = employee.getEmployeeID();
+		TimeOffRequest approvedRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, true));
+		TimeOffRequest pendingRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, null));
+		TimeOffRequest deniedRequest = this.repo.save(new TimeOffRequest(employee, 0, 1, false));
+
+		// get not denied requests
+		List<TimeOffRequest> requests = this.repo.findByEmployeeEmployeeIDAndApprovedNotFalse(employeeID);
+
+		// there should be exactly two requests
+		Assertions.assertEquals(2, requests.size());
+
+		// and none of them should be false
+		for (TimeOffRequest actualRequest : requests)
+		{
+			Boolean approved = actualRequest.getApproved();
+			Assertions.assertTrue(approved == null || approved);
+		}
 	}
 
 
