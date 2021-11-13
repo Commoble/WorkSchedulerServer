@@ -72,6 +72,8 @@ public class ShiftTypeServiceTests
         Mockito.when(repo.findById(st.getShiftTypeID()))
                 .thenReturn(Optional.of(st));
         boolean deletedTrue = service.delete(st.getShiftTypeID());
+        Mockito.doThrow(IllegalArgumentException.class)
+            .when(repo).deleteById(null);
         boolean deletedFalse = service.delete(null);
         Assertions.assertTrue(deletedTrue);
         Assertions.assertFalse(deletedFalse);

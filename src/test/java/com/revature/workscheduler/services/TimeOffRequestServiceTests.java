@@ -76,6 +76,8 @@ public class TimeOffRequestServiceTests
         Mockito.when(repo.findById(st.getTimeOffRequestID()))
                 .thenReturn(Optional.of(st));
         boolean deletedTrue = service.delete(st.getTimeOffRequestID());
+        Mockito.doThrow(IllegalArgumentException.class)
+            .when(repo).deleteById(null);
         boolean deletedFalse = service.delete(null);
         Assertions.assertTrue(deletedTrue);
         Assertions.assertFalse(deletedFalse);

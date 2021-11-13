@@ -5,6 +5,7 @@ import com.revature.workscheduler.models.ShiftType;
 import com.revature.workscheduler.services.ScheduledShiftService;
 import com.revature.workscheduler.utils.ParseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,10 @@ public class ScheduledShiftController {
 
     @Secured("ROLE_MANAGER")
     @PostMapping(value = "/schedule", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
     public ScheduledShift addScheduledShift(@RequestBody ScheduledShift a) {
-        return sss.add(a);
+        ScheduledShift shift = this.sss.add(a);
+        return shift;
     }
 
 //    @PutMapping(value = "schedule/{id}", consumes = "application/json", produces = "application/json")

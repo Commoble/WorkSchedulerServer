@@ -1,6 +1,7 @@
 package com.revature.workscheduler.controllers;
 
 
+import com.google.gson.Gson;
 import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.ScheduledShift;
@@ -9,6 +10,8 @@ import com.revature.workscheduler.models.TimeOffRequest;
 import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.services.ScheduledShiftService;
 import com.revature.workscheduler.services.ScheduledShiftServiceTest;
+import com.revature.workscheduler.testutils.ModelGenerators;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,7 @@ import java.util.List;
 
 public class ScheduledShiftControllerTests
 {
+    private static Gson GSON = new Gson();
 
     @MockBean
     private ScheduledShiftService ss;
@@ -42,7 +46,7 @@ public class ScheduledShiftControllerTests
     private MockMvc mvc;
 
 
-    @WithMockUser(username = "user", password = "pass", roles = {"USER, MANAGER"})
+    @WithMockUser(username = "user", password = "pass", roles = {"USER", "MANAGER"})
     @Test
     void getScheduledShift() throws Exception {
         Mockito.when(ss.get(1)).thenReturn(new ScheduledShift(1, new ShiftType(), new Employee(), 0));
@@ -67,6 +71,33 @@ public class ScheduledShiftControllerTests
         ResultActions actions = mvc.perform(MockMvcRequestBuilders.get("/schedule"));
         actions.andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @WithMockUser(username = "user", password = "pass", roles = {"USER", "MANAGER"})
+    @Test
+    void postScheduledShift() throws Exception
+    {
+        Employee employee = ModelGenerators.makeRandomEmployee();
+        employee.setEmployeeID(1);
+        ShiftType shiftType = new ShiftType(1, "Test Shift Type", 0, 1);
+        ScheduledShift expectedShift = new ScheduledShift(1, shiftType, employee, 0);
+        Mockito.when(this.ss.add(Mockito.any(ScheduledShift.class)))
+            .thenReturn(expectedShift);
+        String body = GSON.toJson(expectedShift);
+        String response = mvc.perform(MockMvcRequestBuilders.post("/schedule")
+                .contentType("application/json")
+                .content(body))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        ScheduledShift actualShift = GSON.fromJson(response, ScheduledShift.class);
+        Assertions.assertEquals(expectedShift.getScheduledShiftID(), actualShift.getScheduledShiftID());
+        Assertions.assertEquals(expectedShift.getShiftType().getShiftTypeID(), actualShift.getShiftType().getShiftTypeID());
+        Assertions.assertEquals(expectedShift.getEmployee().getEmployeeID(), actualShift.getEmployee().getEmployeeID());
+        Assertions.assertEquals(expectedShift.getDate(), actualShift.getDate());
+    }
+
+
 //
 //    @WithMockUser(username = "user", password = "pass", roles = {"USER, MANAGER"})
 //    @Test

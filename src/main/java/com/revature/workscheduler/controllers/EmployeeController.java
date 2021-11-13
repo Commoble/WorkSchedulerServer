@@ -95,7 +95,7 @@ public class EmployeeController
 			);
 		}
 		long startTime = ParseUtils.safeParseLong(startTimeParam, Long.MIN_VALUE);
-		long endTime = ParseUtils.safeParseLong(startTimeParam, Long.MAX_VALUE);
+		long endTime = ParseUtils.safeParseLong(endTimeParam, Long.MAX_VALUE);
 		return GSON.toJson(this.service.getAssignableEmployees(shiftTypeID, startTime, endTime)
 			.stream()
 			.map(EmployeeResponse::new)
