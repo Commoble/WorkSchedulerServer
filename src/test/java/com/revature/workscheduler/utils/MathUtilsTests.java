@@ -12,5 +12,7 @@ public class MathUtilsTests
 		Assertions.assertFalse(MathUtils.doesTimeOverlap(0,2,3,4));
 		Assertions.assertFalse(MathUtils.doesTimeOverlap(3,4,0,2));
 		Assertions.assertFalse(MathUtils.doesTimeOverlap(3,4,-2,-1));
+		Assertions.assertFalse(MathUtils.doesTimeOverlap(2,1,3,4));
+		Assertions.assertFalse(MathUtils.doesTimeOverlap(1,2,4,3));
 	}
 }

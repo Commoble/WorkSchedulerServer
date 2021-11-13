@@ -30,4 +30,30 @@ public class ParseUtilsTests
 		int actual = ParseUtils.safeParseInt(input, expected);
 		Assertions.assertEquals(expected, actual);
 	}
+
+	@Test
+	void safeParseLongParsesLong()
+	{
+		long expected = 5;
+		String five = "5";
+		long actual = ParseUtils.safeParseLong(five, 0L);
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void safeParseLongDefaultsWhenInputNull()
+	{
+		long expected = 5;
+		long actual = ParseUtils.safeParseLong(null, expected);
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void safeParseLongDefaultsWhenParseFails()
+	{
+		long expected = 5;
+		String input = "six";
+		long actual = ParseUtils.safeParseLong(input, expected);
+		Assertions.assertEquals(expected, actual);
+	}
 }
