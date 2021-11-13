@@ -4,6 +4,8 @@ import com.revature.workscheduler.app.WorkschedulerApplication;
 import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.TimeOffRequest;
 import com.revature.workscheduler.repositories.TimeOffRequestRepo;
+import com.revature.workscheduler.testutils.ModelGenerators;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -93,5 +95,18 @@ public class TimeOffRequestServiceTests
         List<TimeOffRequest> stList = new LinkedList<>();
         List<TimeOffRequest> stList2 = service.getPendingRequests();
         Assertions.assertEquals(stList.getClass(), stList2.getClass());
+    }
+
+    @Test
+    void getNotDeniedRequestsForEmployee()
+    {
+        int employeeID = 1;
+        Employee employee = ModelGenerators.makeRandomEmployee();
+        employee.setEmployeeID(employeeID);
+        TimeOffRequest request = new TimeOffRequest(1, employee, 0, 1, true);
+        List<TimeOffRequest> list = Lists.list(request);
+        Mockito.when(this.repo.findByEmployeeEmployeeIDAndApprovedNotFalse(employeeID))
+            .thenReturn(list);
+        Assertions.assertEquals(list, this.service.getNotDeniedRequestsForEmployee(employeeID));
     }
 }
