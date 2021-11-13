@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService
 		// B) are not already scheduled in the given time, and
 		// C) have no time off pending or approved in the given time
 		// D) have no recurring unavailabilities in the given time
-		return this.employeeShiftTypeJunctionRepo.findByEmployeeEmployeeID(shiftTypeID)
+		return this.employeeShiftTypeJunctionRepo.findByShiftTypeShiftTypeID(shiftTypeID)
 			.stream()
 			.map(EmployeeShiftTypeJunction::getEmployee)
 			.filter(employee ->{
