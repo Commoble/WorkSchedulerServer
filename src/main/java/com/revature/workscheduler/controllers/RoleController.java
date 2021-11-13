@@ -1,6 +1,7 @@
 package com.revature.workscheduler.controllers;
 
 
+import com.google.gson.Gson;
 import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,35 +12,41 @@ import java.util.List;
 
 @RestController
 public class RoleController {
+    private static final Gson GSON = new Gson();
+
     @Autowired
     RoleService as;
 
     @Secured("ROLE_MANAGER")
     @GetMapping("/roles")
-    public List<Role> getAllRoles() {
+    public String getAllRoles() {
         System.out.println("Getting All Roles");
-        return as.getAll();
+        List<Role> roles = as.getAll();
+        return GSON.toJson(roles);
     }
 
     @Secured("ROLE_MANAGER")
     @GetMapping("/roles/{id}")
-    public Role getRole(@PathVariable("id") String id) {
-        return as.get(Integer.parseInt(id));
+    public String getRole(@PathVariable("id") String id) {
+        Role role = as.get(Integer.parseInt(id));
+        return GSON.toJson(role);
     }
 //
 //
 //
     @Secured("ROLE_MANAGER")
     @PostMapping(value = "/roles", consumes = "application/json", produces = "application/json")
-    public Role addRole(@RequestBody Role a) {
-        return as.add(a);
+    public String addRole(@RequestBody Role a) {
+        Role role = as.add(a);
+        return GSON.toJson(role);
     }
 
     @Secured("ROLE_MANAGER")
     @PutMapping(value = "roles/{id}", consumes = "application/json", produces = "application/json")
-    public Role updateRole(@PathVariable("id") String id, @RequestBody Role change) {
+    public String updateRole(@PathVariable("id") String id, @RequestBody Role change) {
         change.setRoleID(Integer.parseInt(id));
-        return as.update(change);
+        Role role = as.update(change);
+        return GSON.toJson(role);
     }
 
 
