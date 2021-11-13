@@ -76,16 +76,12 @@ public interface CrudService<T, KEY, REPO extends CrudRepository<T, KEY>>
 	 */
 	default boolean delete(KEY id)
 	{
-		T data = this.get(id);
-		if (data == null)
-		{
-			return false;
-		}
 		try
 		{
 			this.getRepo().deleteById(id);
 			return true;
 		}
+		// deleteByID throws this if id is null
 		catch(IllegalArgumentException e)
 		{
 			return false;
