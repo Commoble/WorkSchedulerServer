@@ -26,6 +26,11 @@ public class EmployeeShiftTypeJunction
 	@JoinColumn(name="shift_type_id", nullable=false)
 	private ShiftType shiftType;
 
+	public EmployeeShiftTypeJunction()
+	{
+		this(new Employee(), new ShiftType());
+	}
+
 	public EmployeeShiftTypeJunction(Employee employee, ShiftType shiftType)
 	{
 		this(0, employee, shiftType);
