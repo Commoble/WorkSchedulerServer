@@ -14,10 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 @SpringBootTest(classes= WorkschedulerApplication.class)
 public class RecurringUnavailabilityServiceTests {
 
@@ -27,7 +27,6 @@ public class RecurringUnavailabilityServiceTests {
     private RecurringUnavailabilityRepo rur;
 
     @Test
-    @Rollback
     void createRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -43,7 +42,6 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
-    @Rollback
     void updateRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -60,7 +58,6 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
-    @Rollback
     void deleteRecurringUnavailability(){
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
@@ -73,55 +70,41 @@ public class RecurringUnavailabilityServiceTests {
     }
 
     @Test
-    @Rollback
     void getRecurringUnavailabilityByEmployee(){
-        Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
+        int empID = 1;
+        Employee employee = new Employee(empID, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,1, /*Monday*/61200000, 18000000);
-        int empID = employee.getEmployeeID();
-        Employee newRURsEmp = newRUR.getEmployee();
-        int newRURsEmpId = newRURsEmp.getEmployeeID();
-        Assertions.assertEquals(empID, newRURsEmpId);
-        RecurringUnavailability actualRUR = service.add(newRUR);
-        List<RecurringUnavailability> listAll = service.getAll();
-        service.getRecurringUnavailabilityByEmployee(empID);
-        for(RecurringUnavailability x : listAll) {
-            int derivedID = x.getEmployee().getEmployeeID();
-            System.out.println(derivedID);
-//            System.out.println("HELLO WORLD");
-            if (derivedID == empID){ Assertions.assertEquals(newRUR, x);}
+        List<RecurringUnavailability> expectedUnavailabilities = Collections.singletonList(newRUR);
+        Mockito.when(this.rur.findByEmployeeEmployeeID(empID))
+            .thenReturn(expectedUnavailabilities);
+        List<RecurringUnavailability> unavailabilities = service.getRecurringUnavailabilityByEmployee(empID);
+        Assertions.assertEquals(1, unavailabilities.size());
+        for(RecurringUnavailability x : unavailabilities) {
+            Assertions.assertEquals(empID, x.getEmployee().getEmployeeID());
         }
-
-
     }
 
     @Test
-    @Rollback
     void getRecurringUnavailabilityByWeekday(){
         int weekday = 1;
         Employee employee = new Employee(1, "Steve Testingperson", "stevet", "parseword", 0);
         RecurringUnavailability newRUR = new RecurringUnavailability(employee,weekday, /*Monday*/61200000, 18000000);
-        List<RecurringUnavailability> actualRUR = rur.findByWeekday(weekday);
-        try {
-            actualRUR.add(newRUR);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        List<RecurringUnavailability> expectedUnavailabilities = Collections.singletonList(newRUR);
+        Mockito.when(this.rur.findByWeekday(weekday))
+            .thenReturn(expectedUnavailabilities);
+        List<RecurringUnavailability> actualRUR = this.service.getRecurringUnavailabilityByWeekday(weekday);
+        Assertions.assertEquals(1, actualRUR.size());
+        for (RecurringUnavailability actualUnavailability : actualRUR)
+        {
+            Assertions.assertEquals(weekday, actualUnavailability.getWeekday());
         }
-        for(RecurringUnavailability x : actualRUR) {
-            if (weekday == x.getWeekday()){ Assertions.assertEquals(newRUR, x);}
-        }
-        List<RecurringUnavailability> retrievedRUR = service.getRecurringUnavailabilityByWeekday(weekday);
-//        actualRUR.get(0).getWeekday()
-//        List<RecurringUnavailability> listAll = service.getAll();
-//        List<RecurringUnavailability> foundRURs = rur.findByWeekday(weekday);
-//        Mockito.when(rur.findByWeekday(weekday)).thenReturn(true);
-//        Assertions.assertEquals(foundRURs, newRUR);
-//         RecurringUnavailability foundRUR = foundRURs.get(0);
-//         Assertions.assertEquals(foundRUR, newRUR);
-
     }
 
     @Test
     void getRecurringUnavailabilityByTime(){
-        service.getRecurringUnavailabilityByTime(61200000, 18000000);
+        // TODO implement test, method currently returns an empty list
+        // when we implement the method then the test will start failing
+        List<RecurringUnavailability> list = service.getRecurringUnavailabilityByTime(61200000, 18000000);
+        Assertions.assertTrue(list.isEmpty());
     }
 }
