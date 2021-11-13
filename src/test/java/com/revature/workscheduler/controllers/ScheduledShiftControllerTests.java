@@ -6,6 +6,7 @@ import com.revature.workscheduler.models.Employee;
 import com.revature.workscheduler.models.ScheduledShift;
 import com.revature.workscheduler.models.ShiftType;
 import com.revature.workscheduler.models.TimeOffRequest;
+import com.revature.workscheduler.services.EmployeeService;
 import com.revature.workscheduler.services.ScheduledShiftService;
 import com.revature.workscheduler.services.ScheduledShiftServiceTest;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ public class ScheduledShiftControllerTests
     @MockBean
     private ScheduledShiftService ss;
 
+    @MockBean
+    private EmployeeService employeeService;
+
     @Autowired
     private MockMvc mvc;
 
@@ -47,14 +51,20 @@ public class ScheduledShiftControllerTests
 
     }
 
-    @WithMockUser(username = "user", password = "pass", roles = {"USER, MANAGER"})
+    @WithMockUser(username = "user", password = "pass", roles = {"USER", "MANAGER"})
     @Test
     void getAllScheduledShift() throws Exception
     {
         List<ScheduledShift> schedule = new ArrayList<>();
+        Employee loggedInEmployee = new Employee(1, "Steve Test", "user", "pass", 0);
+        int employeeID = loggedInEmployee.getEmployeeID();
+        Mockito.when(employeeService.getLoggedInEmployee())
+            .thenReturn(loggedInEmployee);
+        Mockito.when(employeeService.isEmployeeManager(employeeID))
+            .thenReturn(true);
         Mockito.when(ss.getAll())
                 .thenReturn(schedule);
-        ResultActions actions = mvc.perform(MockMvcRequestBuilders.get("/schedules"));
+        ResultActions actions = mvc.perform(MockMvcRequestBuilders.get("/schedule"));
         actions.andExpect(MockMvcResultMatchers.status().isOk());
     }
 //

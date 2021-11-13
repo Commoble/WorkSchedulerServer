@@ -10,6 +10,7 @@ import com.revature.workscheduler.models.TimeOffRequest;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
 import com.revature.workscheduler.repositories.EmployeeShiftTypeJunctionRepo;
+import com.revature.workscheduler.utils.LoggedInEmployee;
 import com.revature.workscheduler.utils.MathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -30,7 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService
 	private EmployeeRepo repo;
 
 	@Autowired
-	private Employee loggedInEmployee;
+	private LoggedInEmployee loggedInEmployee;
 
 	@Autowired
 	private EmployeeShiftTypeJunctionRepo employeeShiftTypeJunctionRepo;
@@ -149,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	public Employee getLoggedInEmployee()
 	{
-		return this.loggedInEmployee;
+		return this.loggedInEmployee.getEmployee();
 	}
 }
 

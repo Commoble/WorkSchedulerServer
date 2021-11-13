@@ -27,24 +27,4 @@ public class ScheduledShiftServiceImpl implements ScheduledShiftService {
     {
         return this.ssr.findByEmployeeEmployeeID(employeeID);
     }
-
-//    @Override
-//    public ScheduledShift addScheduledShift(ScheduledShift a) {
-//        return ssr.save(a);
-//    }
-//
-//    @Override
-//    public ScheduledShift getScheduledShift(int id) {
-//        return ssr.findById(id).get();
-//    }
-//
-//    @Override
-//    public List<ScheduledShift> getAllScheduledShift() {
-//        return (List<ScheduledShift>) ssr.findAll();
-//    }
-//
-//    @Override
-//    public ScheduledShift updateScheduledShift(ScheduledShift change) {
-//        return ssr.save(change);
-//    }
 }

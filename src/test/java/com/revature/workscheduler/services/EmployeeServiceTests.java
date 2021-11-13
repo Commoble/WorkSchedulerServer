@@ -6,15 +6,18 @@ import com.revature.workscheduler.models.EmployeeRoleJunction;
 import com.revature.workscheduler.models.Role;
 import com.revature.workscheduler.repositories.EmployeeRepo;
 import com.revature.workscheduler.repositories.EmployeeRoleJunctionRepo;
+import com.revature.workscheduler.testutils.ModelGenerators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @SpringBootTest(classes= WorkschedulerApplication.class)
@@ -176,26 +179,49 @@ public class EmployeeServiceTests
 	@Test
 	void isEmployeeManagerIsFalseForNotManager()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int employeeID = 1;
+		Employee mockEmployee = ModelGenerators.makeRandomEmployee();
+		mockEmployee.setEmployeeID(employeeID);
+		Role mockRole = new Role(1, "Test Role", false);
+		EmployeeRoleJunction mockJunction = new EmployeeRoleJunction(1, mockEmployee, mockRole);
+		List<EmployeeRoleJunction> mockJunctions = Collections.singletonList(mockJunction);
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(employeeID))
+			.thenReturn(mockJunctions);
+		boolean isManager = this.service.isEmployeeManager(employeeID);
+		Assertions.assertFalse(isManager);
 	}
 
 	@Test
 	void isEmployeeManagerIsFalseForMissingEmployee()
 	{
 		int id = 1;
-		Mockito.when(repo.findById(1)).thenReturn(Optional.empty());
-		Assertions.assertFalse(this.service.isEmployeeManager(id));
+		Mockito.when(this.employeeRoleJunctionRepo.findByEmployeeEmployeeID(id))
+			.thenReturn(Collections.emptyList());
+		boolean isManager = this.service.isEmployeeManager(id);
+		Assertions.assertFalse(isManager);
 	}
 
+
 	@Test
+	@WithMockUser(username="stevet", password="password", roles="USER")
 	void getLoggedInEmployeeGetsLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		int id = 1;
+		String username = "stevet";
+		String password = "password";
+		Employee mockEmployee = new Employee(id, "Steve Testperson", username, password, 0);
+		Mockito.when(this.repo.findByUsername(username))
+			.thenReturn(mockEmployee);
+		Employee actualEmployee = this.service.getLoggedInEmployee();
+		Assertions.assertEquals(id, actualEmployee.getEmployeeID());
 	}
 
 	@Test
+	@WithMockUser(username="stevet", password="password", roles="USER")
 	void getLoggedInEmployeeDoesntGetNotLoggedInEmployee()
 	{
-		Assertions.assertTrue(false); // TODO write test
+		Mockito.when(this.repo.findByUsername("stevet"))
+			.thenReturn(null);
+		Assertions.assertNull(this.service.getLoggedInEmployee());
 	}
 }
