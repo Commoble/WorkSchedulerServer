@@ -30,6 +30,16 @@ public class ScheduledShiftServiceTest {
     private ScheduledShiftRepo sr;
 
     @Test
+    void getScheduledShiftID()
+    {
+        int id = 5;
+        ScheduledShift shift = new ScheduledShift();
+        shift.setScheduledShiftID(id);
+        Assertions.assertEquals(id, this.ss.getIDFor(shift));
+
+    }
+
+    @Test
     void addScheduledShift() {
         ScheduledShift MS = new ScheduledShift(0, new ShiftType(), new Employee(), 1);
 
