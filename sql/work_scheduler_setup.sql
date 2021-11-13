@@ -86,5 +86,15 @@ insert into shift_types values
 	(default, 'Night Kitchen', 43200000, 68400000), -- Noon to 7pm
 	(default, 'Night Register', 43200000, 68400000); -- Noon to 7pm
 	
+insert into employee_shift_type_junctions values
+	(default, 1,1),
+	(default, 1,2),
+	(default, 1,3),
+	(default, 1,4),
+	(default, 2,1),
+	(default, 2,2),
+	(default, 2,3),
+	(default, 2,4);
+	
 insert into recurring_unavailabilities values
 	(default, 1, 0, 18000000, 43200000);

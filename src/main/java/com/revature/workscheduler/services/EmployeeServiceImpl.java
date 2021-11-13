@@ -63,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	public List<Employee> getAssignableEmployees(int shiftTypeID)
 	{
-		return this.employeeShiftTypeJunctionRepo.findByEmployeeEmployeeID(shiftTypeID)
+		return this.employeeShiftTypeJunctionRepo.findByShiftTypeShiftTypeID(shiftTypeID)
 			.stream()
 			.map(EmployeeShiftTypeJunction::getEmployee)
 			.collect(Collectors.toList());
